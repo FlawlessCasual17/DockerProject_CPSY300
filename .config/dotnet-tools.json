@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "credfeto.package.update": {
+      "version": "1.10.120.1183",
+      "commands": [
+        "updatepackages"
+      ],
+      "rollForward": false
+    }
+  }
+}
