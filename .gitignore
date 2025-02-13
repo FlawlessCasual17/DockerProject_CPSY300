@@ -482,3 +482,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# gut
+.gut
+
+# Linux specific
+nohup.out
