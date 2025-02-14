@@ -1,6 +1,6 @@
 using dotenv.net;
 using Microsoft.EntityFrameworkCore;
-namespace DockerProject_CPSY300.Database;
+namespace API.Database;
 
 public class Service {
     AppContext? dbContext;

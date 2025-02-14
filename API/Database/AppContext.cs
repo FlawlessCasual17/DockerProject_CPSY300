@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-namespace DockerProject_CPSY300.Database;
+namespace API.Database;
 
 public class AppContext(
     DbContextOptions<AppContext> options

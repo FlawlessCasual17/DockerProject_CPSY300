@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace DockerProject_CPSY300.Database;
+namespace API.Database;
 
 /// <summary>
 /// A table model for mock (fake) student data.

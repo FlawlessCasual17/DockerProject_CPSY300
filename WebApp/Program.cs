@@ -1,4 +1,4 @@
-using DockerProject_CPSY300.Components;
+using WebApp.Components;
 using Blazorise;
 using Blazorise.Tailwind;
 using Blazorise.Icons.FontAwesome;
