@@ -23,7 +23,8 @@ public class Service {
                 .Build();
 
             // Get the connection string from the configuration
-            var connString = config.GetConnectionString("DefaultConnection");
+            var connString = config.GetConnectionString("DefaultConnection")
+                ?? throw new Exception("No connection string found.");
 
             // Create a new connection
             var options = new DbContextOptionsBuilder<AppContext>()
