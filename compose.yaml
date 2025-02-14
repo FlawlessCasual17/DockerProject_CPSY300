@@ -1,4 +1,4 @@
-﻿services:
+services:
   api:
     image: api
     build:
