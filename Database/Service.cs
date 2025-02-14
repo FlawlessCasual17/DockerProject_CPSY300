@@ -18,7 +18,6 @@ public class Service {
 
             // Build a new configuration
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", true, true)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables()
                 .Build();
@@ -49,5 +48,5 @@ public class Service {
     /// Occurs when the database has not been initialized.
     /// </exception>
     public AppContext GetDbContext()
-        => dbContext ?? throw new Exception("Database has not been initialized.");
+        => dbContext ?? throw new Exception("The Database has not been initialized.");
 }
