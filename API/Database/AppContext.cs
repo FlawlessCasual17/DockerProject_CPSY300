@@ -5,7 +5,7 @@ public class AppContext(
     DbContextOptions<AppContext> options
 ) : DbContext(options) {
     // Define a property for each table
-    public DbSet<Students> StudentsDbSet { get; set; }
+    public DbSet<Students> Students { get; set; }
 
     // NOTE:
     // No need to use `OnConfiguring()` here since

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+// ReSharper disable All
 namespace API.Database;
 
 /// <summary>
@@ -8,17 +9,16 @@ namespace API.Database;
 [Table("students")]
 public class Students {
     [Key] [Column("student_id")]
-    public int? StudentId { get; set; }
+    public int studentID { get; set; }
 
+    [MaxLength(100)]
     [Required] [Column("student_name")]
-    public required string? StudentName { get; set; }
+    public required string studentName { get; set; }
 
-    [Required] [Column("email")]
-    public required string? Email { get; set; }
-
+    [MaxLength(100)]
     [Required] [Column("course")]
-    public required string? Course { get; set; }
+    public required string course { get; set; }
 
     [Column("present_date")]
-    public DateTime? PresentDate { get; set; }
+    public DateTime? presentDate { get; set; }
 }
