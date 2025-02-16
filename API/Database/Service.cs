@@ -14,10 +14,14 @@ public class Service {
     /// </exception>
     public async Task Initialize() {
         try {
+            // Get the path to the ".env" file
+            var basePath = Directory.GetCurrentDirectory();
+            var path = Path.Join(basePath, ".env");
+
             // Build a new configuration
             var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddDotNetEnv("./.env", LoadOptions.TraversePath()) // Load from ".env"
+                .SetBasePath(basePath)
+                .AddDotNetEnv(path, LoadOptions.TraversePath()) // Load from ".env"
                 .Build();
 
             // Get the connection string from the configuration
