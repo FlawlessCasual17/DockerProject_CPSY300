@@ -1,4 +1,5 @@
-using dotenv.net;
+using DotNetEnv;
+using DotNetEnv.Configuration;
 using Microsoft.EntityFrameworkCore;
 namespace API.Database;
 
@@ -13,13 +14,11 @@ public class Service {
     /// </exception>
     public async Task Initialize() {
         try {
-            // Load from ".env"
-            DotEnv.Load();
-
             // Build a new configuration
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddEnvironmentVariables()
+                // Load from ".env"
+                .AddDotNetEnv("./.env", LoadOptions.TraversePath())
                 .Build();
 
             // Get the connection string from the configuration
@@ -37,7 +36,7 @@ public class Service {
             await dbContext.Database.EnsureCreatedAsync();
         } catch (Exception ex) {
             // If all else fails, throw an exception
-            throw new Exception(ex.Message);
+            throw new Exception(ex.Message, ex);
         }
     }
 
