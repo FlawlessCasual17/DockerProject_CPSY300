@@ -4,22 +4,30 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>29c04f6d-4eb3-4987-bba1-27378b90b6ff</UserSecretsId>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin/Debug/net9.0/</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin/Release/net9.0/</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetEnv" Version="3.1.1"/>
-    <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.0.2"/>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2"/>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
       <IncludeAssets>
         runtime; build; native; contentfiles; analyzers; buildtransitive
       </IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3"/>
-    <PackageReference Include="Z.EntityFramework.Extensions" Version="9.103.7.1"/>
-    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="9.103.7.1"/>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
+    <PackageReference Include="Z.EntityFramework.Extensions" Version="9.103.7.1" />
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="9.103.7.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,8 +36,9 @@
     </Content>
   </ItemGroup>
 
+  <!-- Use .env for now. Might use .NET User Secrets in the future. -->
   <ItemGroup>
-    <None CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" Include=".env"/>
+    <None CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" Include=".env" />
   </ItemGroup>
 
 </Project>

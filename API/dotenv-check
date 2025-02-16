@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Get the directory of the script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Check if .env file exists
+if [ ! -f ".env" ]; then
+    echo ".env file not found!"
+    echo "Please place the .env file in the '$SCRIPT_DIR' directory."
+    echo "Then run \`docker build ...\` or \`podman build ...\` again."
+    echo "The .env file should contain the following environment variables in the following format:"
+    echo "ConnectionStrings__DefaultConnection='Host=<uri>;Database=<database>;Username=<user>;Password=<password>'"
+    exit 1
+fi
