@@ -17,8 +17,7 @@ public class Service {
             // Build a new configuration
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                // Load from ".env"
-                .AddDotNetEnv("./.env", LoadOptions.TraversePath())
+                .AddDotNetEnv("./.env", LoadOptions.TraversePath()) // Load from ".env"
                 .Build();
 
             // Get the connection string from the configuration
