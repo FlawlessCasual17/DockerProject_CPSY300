@@ -6,23 +6,28 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Development
+# Set shell to bash
+RUN exec /bin/bash
 WORKDIR /src
-ADD . ./API
+COPY './*.csproj' './API/'
+RUN pwd; ls -la
 WORKDIR /src/API
-RUN exec bash # switch the shell to BASH
-RUN pwd
-RUN ls -la
+RUN pwd; ls -la
+RUN dotnet restore . --disable-parallel --use-lock-file
+RUN pwd; ls -la
+COPY . .
+RUN pwd; ls -la
 RUN chmod +x ./dotenv-check && ./dotenv-check
-RUN if [ "$?" -ne 0 ]; then exit 1; fi # Check exit code
-#RUN rm -r ./obj ./bin
-RUN dotnet restore .
-RUN dotnet build . -c $BUILD_CONFIGURATION -o /app/build
+# Check exit code
+RUN if [ "$?" -ne 0 ]; then exit 1; fi
+RUN dotnet build . -c $BUILD_CONFIGURATION -o '/app/build'
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Development
-RUN dotnet publish . -c $BUILD_CONFIGURATION '/p:UseAppHost=false' -o /app/publish
+RUN dotnet publish . -c $BUILD_CONFIGURATION \
+    '/p:UseAppHost=false' -o '/app/publish'
 
 FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+WORKDIR '/app'
+COPY --from=publish "/app/publish" .
 ENTRYPOINT ["dotnet", "API.dll"]

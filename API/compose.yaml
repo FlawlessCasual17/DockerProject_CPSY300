@@ -1,11 +1,11 @@
 services:
-  "student-api":
+  a_service:
     container_name: student_api
     image: student-api
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
