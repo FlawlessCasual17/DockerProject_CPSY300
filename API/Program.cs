@@ -1,6 +1,8 @@
 using System.Text.Json;
 using API.Database;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 namespace API;
 
 public abstract class Program {
@@ -18,12 +20,12 @@ public abstract class Program {
 
         app.UseHttpsRedirection();
 
-        var serv = new Service();
-        await serv.Initialize();
+        var dbService = new Service();
+        await dbService.Initialize();
 
         // Create a route for GET requests
         app.MapGet("/student", async () => {
-                var dbContext = serv.GetDbContext();
+                var dbContext = dbService.GetDbContext();
                 var students = await dbContext.Students.ToListAsync();
                 var jsonOptions = new JsonSerializerOptions {
                     WriteIndented = true
@@ -32,11 +34,24 @@ public abstract class Program {
             }
         ).WithName("GetStudentData");
 
-        // Create a route for POST requests
         app.MapPost("/student", async (Students student) => {
-                var dbContext = serv.GetDbContext();
+                var dbContext = dbService.GetDbContext();
                 var date = student.presentDate;
                 student.presentDate = date.ToUniversalTime();
+
+                // Check if the database connection is open
+                if (dbContext.Database.GetDbConnection().State != System.Data.ConnectionState.Open)
+                    await dbContext.Database.OpenConnectionAsync();
+
+                // Check if the table exists
+                var command = dbContext.Database.GetDbConnection().CreateCommand();
+                command.CommandText = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'students'";
+                var result = await command.ExecuteScalarAsync();
+
+                if (result == null)
+                    return Results.Conflict(new StatusCodeResult(409));
+
+                // Add the student
                 dbContext.Students.Add(student);
                 await dbContext.SaveChangesAsync();
                 return Results.Created($"/student/{student.studentID}", student);
