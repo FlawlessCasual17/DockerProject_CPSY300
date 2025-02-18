@@ -41,9 +41,7 @@ public abstract class Program {
                 await dbContext.SaveChangesAsync();
                 return Results.Created($"/student/{student.studentID}", student);
             }
-        ).WithMetadata(
-            new EndpointMetadataCollection(new RouteNameMetadata("CreateStudent"))
-        );
+        ).WithName("SendStudentData");
 
         await app.RunAsync();
     }
