@@ -49,7 +49,7 @@ public abstract class Program {
                 var result = await command.ExecuteScalarAsync();
 
                 if (result == null)
-                    return Results.Conflict(new StatusCodeResult(409));
+                    return Results.Json(new { error = "The table does not exist." }, statusCode: 409);
 
                 // Add the student
                 dbContext.Students.Add(student);
