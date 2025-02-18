@@ -25,38 +25,39 @@ public abstract class Program {
 
         // Create a route for GET requests
         app.MapGet("/student", async () => {
-                var dbContext = dbService.GetDbContext();
-                var students = await dbContext.Students.ToListAsync();
-                var jsonOptions = new JsonSerializerOptions {
-                    WriteIndented = true
-                };
-                return Results.Json(students, jsonOptions);
-            }
-        ).WithName("GetStudentData");
+            var dbContext = dbService.GetDbContext();
+            var students = await dbContext.Students.ToListAsync();
+            var jsonOptions = new JsonSerializerOptions {
+                WriteIndented = true
+            };
+            return Results.Json(students, jsonOptions);
+        }).WithName("GetStudentData");
 
         app.MapPost("/student", async (Students student) => {
-                var dbContext = dbService.GetDbContext();
-                var date = student.presentDate;
-                student.presentDate = date.ToUniversalTime();
+            var dbContext = dbService.GetDbContext();
+            var date = student.presentDate;
+            student.presentDate = date.ToUniversalTime();
 
-                // Check if the database connection is open
-                if (dbContext.Database.GetDbConnection().State != System.Data.ConnectionState.Open)
-                    await dbContext.Database.OpenConnectionAsync();
+            // Check if the database connection is open
+            if (dbContext.Database.GetDbConnection().State != System.Data.ConnectionState.Open)
+                await dbContext.Database.OpenConnectionAsync();
 
-                // Check if the table exists
-                var command = dbContext.Database.GetDbConnection().CreateCommand();
-                command.CommandText = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'students'";
-                var result = await command.ExecuteScalarAsync();
+            // Check if the student already exists
+            var existingStudent = await dbContext.Students
+                .FirstOrDefaultAsync(s =>
+                    s.presentDate == student.presentDate &&
+                    s.studentID == student.studentID);
 
-                if (result == null)
-                    return Results.Json(new { error = "The table does not exist." }, statusCode: 409);
-
-                // Add the student
-                dbContext.Students.Add(student);
-                await dbContext.SaveChangesAsync();
-                return Results.Created($"/student/{student.studentID}", student);
+            if (existingStudent != null) {
+                var data = new { error = "A student with the same data already exists." };
+                return Results.Json(data, statusCode: 409);
             }
-        ).WithName("SendStudentData");
+
+            // Add the student
+            dbContext.Students.Add(student);
+            await dbContext.SaveChangesAsync();
+            return Results.Created($"/student/{student.studentID}", student);
+        }).WithName("SendStudentData");
 
         await app.RunAsync();
     }
