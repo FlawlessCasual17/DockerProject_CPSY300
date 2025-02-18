@@ -1,4 +1,5 @@
-﻿**/.dockerignore
+﻿#  Include
+**/.dockerignore
 **/.env
 **/.git
 **/.gitignore
@@ -24,3 +25,6 @@
 **/packages.lock.json
 LICENSE
 README.md
+
+# Exclude
+!API/.env
