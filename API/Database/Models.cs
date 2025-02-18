@@ -19,6 +19,6 @@ public class Students {
     [Required] [Column("course")]
     public required string course { get; set; }
 
-    [Column("present_date")]
-    public DateTime? presentDate { get; set; }
+    [Required] [Column("present_date")]
+    public required DateTime presentDate { get; set; }
 }

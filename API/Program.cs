@@ -3,7 +3,7 @@ using API.Database;
 using Microsoft.EntityFrameworkCore;
 namespace API;
 
-public class Program {
+public abstract class Program {
     public static async Task Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -33,11 +33,13 @@ public class Program {
         ).WithName("GetStudentData");
 
         // Create a route for POST requests
-        app.MapPost("/student", async (Students students) => {
+        app.MapPost("/student", async (Students student) => {
                 var dbContext = serv.GetDbContext();
-                dbContext.Students.Add(students);
+                var date = student.presentDate;
+                student.presentDate = date.ToUniversalTime();
+                dbContext.Students.Add(student);
                 await dbContext.SaveChangesAsync();
-                return Results.Created($"/student/{students.studentID}", students);
+                return Results.Created($"/student/{student.studentID}", student);
             }
         ).WithMetadata(
             new EndpointMetadataCollection(new RouteNameMetadata("CreateStudent"))

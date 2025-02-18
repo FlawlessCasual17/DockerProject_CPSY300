@@ -15,6 +15,15 @@ public class AppContext(
         base.OnModelCreating(modelBuilder);
 
         // What does this do? It maps the `Students` class to the `students` table
-        modelBuilder.Entity<Students>().ToTable("students");
+        modelBuilder.Entity<Students>((student) => {
+            student.ToTable("students");
+            student.HasKey(s => s.studentID);
+            student.Property(s => s.studentName)
+                .HasColumnName("student_name");
+            student.Property(s => s.course)
+                .HasColumnName("course");
+            student.Property(s => s.presentDate)
+                .HasColumnName("present_date");
+        });
     }
 }
