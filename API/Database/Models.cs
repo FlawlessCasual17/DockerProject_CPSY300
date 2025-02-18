@@ -8,8 +8,9 @@ namespace API.Database;
 /// </summary>
 [Table("students")]
 public class Students {
-    [Key] [Column("student_id")]
-    public int studentID { get; set; }
+    [Key]
+    [Required] [Column("student_id")]
+    public required int studentID { get; set; }
 
     [MaxLength(100)]
     [Required] [Column("student_name")]
