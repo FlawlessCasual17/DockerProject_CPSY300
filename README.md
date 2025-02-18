@@ -38,7 +38,8 @@ Podman
 podman compose up -d
 ```
 
-Using the compose option is the recommended way to run the app. It will build the ima
+Using the compose option is the recommended way to
+run the app. It will build the image first, then run it.
 
 ### Building the Image
 
