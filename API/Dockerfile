@@ -20,7 +20,7 @@ RUN dotnet restore . --disable-parallel --use-lock-file
 RUN pwd; ls -la
 # Copy to a temporary directory
 COPY . './tmp/'
-# Then copy everything else except /bin/ and /obj/
+# Then copy everything else except /bin/, /obj/, *.csproj
 RUN rsync -r --no-R '--exclude=/bin' '--exclude=/obj' '--exclude=*.csproj' ./tmp/ . > /dev/null
 # Remove the temporary directory
 RUN rm -rf ./tmp
