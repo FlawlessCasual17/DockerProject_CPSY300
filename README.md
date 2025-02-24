@@ -2,7 +2,15 @@
 
 A (WIP) description.
 
-## Building and Running
+## Table of Contents
+
+* [Docker Project for CPSY300](#docker-project-for-cpsy300)
+  * [Table of Contents](#table-of-contents)
+  * [:package: Building and Running :rocket:](#package-building-and-running-rocket)
+  * [:whale: Docker / Podman :otter:](#whale-docker--podman-otter)
+    * [:package: Building the Image](#package-building-the-image)
+
+## :package: Building and Running :rocket:
 
 To build the app execute,
 
@@ -22,63 +30,70 @@ To run the app (without building), execute,
 dotnet run . --no-build --launch-profile http
 ```
 
-## Docker/Podman
+## :whale: Docker / Podman :otter:
 
-If you have Docker or Podman installed, you can run the app easily by using,
+> [!NOTE]
+> The command, `podman compose` is not the same as `podman-compose`.
+> The `podman compose` command will either use `docker-compose` or
+> `podman-compose` depending on which is installed.
+> If you have both installed, `podman compose` will
+> use `docker-compose` over `podman-compose`.
+> There is currently no way to override this
+> behavior for the command, `podman compose`.
 
-Docker
+If you have Docker or Podman installed, you can run
+the app easily by using, `docker compose` or `podman compose`,
 
-```sh
-docker compose up -d
-```
+* **Docker**
 
-Podman
+  ```sh
+  docker compose up -d
+  ```
 
-```sh
-podman compose up -d
-```
+* **Podman**
 
-Using the compose option is the recommended way to
-run the app. It will build the image first, then run it.
+  ```sh
+  podman compose up -d
+  ```
 
-### Building the Image
+Using either choice is the recommended way to
+run the app as it will build the image first, then run it.
+
+### :package: Building the Image
 
 If you just want to build the image, run either of the following,
 
 <details>
-<summary>API</summary>
+<summary><ins>API</ins></summary>
 
-Docker
+* :whale: **Docker**
 
-```sh
-docker build -f ./API/Dockerfile -t student-api
-```
+  ```sh
+  docker-compose build student_api
+  ```
 
-Podman
+* :otter: **Podman**
 
-```sh
-podman build -f ./API/Dockerfile -t student-api
-```
-
+  ```sh
+  podman-compose build student_api
+  ```
 
 </details>
 
-
-
 <details>
 
-<summary>Web App</summary>
+<summary><ins>Web App</ins></summary>
 
-Docker
+* :whale: **Docker**
 
-```sh
-docker build -f ./WebApp/Dockerfile -t student-api-webapp
-```
+  ```sh
+  docker-compose build web_app
+  ```
 
-Podman
+* :otter: **Podman**
 
-```sh
-podman build -f ./WebApp/Dockerfile -t student-api-webapp
-```
+  ```sh
+  podman-compose build web_app
+  ```
 
 </details>
