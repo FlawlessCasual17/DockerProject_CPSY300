@@ -1,0 +1,21 @@
+services:
+  student_api:
+    container_name: student_api
+    image: student-api
+    build:
+      context: ./API
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
+      - 7199:7199
+  # web_app:
+  #   container_name: web_app
+  #   image: web-app
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - 5067:5067
+  #     - 7049:7049
+  #   depends_on:
+  #     - student_api

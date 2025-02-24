@@ -1,8 +1,6 @@
 using System.Text.Json;
-using API.Database;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using API.Database;
 namespace API;
 
 public abstract class Program {
@@ -18,29 +16,33 @@ public abstract class Program {
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
-        app.UseHttpsRedirection();
+        app.UseHttpsRedirection(); // Enable HTTPS redirection
 
+        // Initialize the database
         var dbService = new Service();
         await dbService.Initialize();
 
+        // Retrieve the database context
+        var dbContext = dbService.GetDbContext();
+
+        // Check if the database connection is open
+        if (dbContext.Database.GetDbConnection().State != System.Data.ConnectionState.Open)
+            await dbContext.Database.OpenConnectionAsync();
+
         // Create a route for GET requests
         app.MapGet("/student", async () => {
-            var dbContext = dbService.GetDbContext();
             var students = await dbContext.Students.ToListAsync();
+
             var jsonOptions = new JsonSerializerOptions {
                 WriteIndented = true
             };
+
             return Results.Json(students, jsonOptions);
         }).WithName("GetStudentData");
 
         app.MapPost("/student", async (Students student) => {
-            var dbContext = dbService.GetDbContext();
             var date = student.presentDate;
             student.presentDate = date.ToUniversalTime();
-
-            // Check if the database connection is open
-            if (dbContext.Database.GetDbConnection().State != System.Data.ConnectionState.Open)
-                await dbContext.Database.OpenConnectionAsync();
 
             // Check if the student already exists
             var existingStudent = await dbContext.Students
@@ -56,6 +58,7 @@ public abstract class Program {
             // Add the student
             dbContext.Students.Add(student);
             await dbContext.SaveChangesAsync();
+
             return Results.Created($"/student/{student.studentID}", student);
         }).WithName("SendStudentData");
 
