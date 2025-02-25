@@ -63,7 +63,8 @@ public abstract class Program {
             dbContext.Students.Add(student);
             await dbContext.SaveChangesAsync();
 
-            return Results.Created($"/student/{student.studentID}", student);
+            return Results.Created(
+                $"/student/{student.studentID}", student);
         }).WithName("SendStudentData");
 
         await app.RunAsync();
