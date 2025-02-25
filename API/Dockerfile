@@ -10,22 +10,22 @@ ARG BUILD_CONFIGURATION=Development
 RUN exec /bin/bash
 # Install rsync
 RUN sh -c 'apt update && apt install -y rsync' > /dev/null
-RUN sh -c 'apt autoremove -y && apt autoremove -y && apt clean -y' > /dev/null
+RUN sh -c 'apt autoremove -y && \
+    apt autoremove -y && apt clean -y' > /dev/null
 WORKDIR /src
 COPY *.csproj './API/'
 RUN pwd; ls -la
 WORKDIR /src/API
-RUN pwd; ls -la
-RUN dotnet restore . --disable-parallel --use-lock-file
+RUN pwd; ls -la; dotnet restore . --disable-parallel --use-lock-file
 RUN pwd; ls -la
 # Copy to a temporary directory
 COPY . './tmp/'
-# Then copy everything else except /bin/, /obj/, *.csproj
-RUN rsync -r --no-R '--exclude=/bin' '--exclude=/obj' '--exclude=*.csproj' ./tmp/ . > /dev/null
+# Then copy everything else except /bin/, /obj/, and *.csproj
+RUN rsync -r --no-R '--exclude=/bin' '--exclude=/obj' \
+    '--exclude=*.csproj' ./tmp/ . > /dev/null
 # Remove the temporary directory
 RUN rm -rf ./tmp
-RUN pwd; ls -la
-RUN chmod +x ./dotenv-check && ./dotenv-check
+RUN pwd; ls -la; chmod +x ./dotenv-check && ./dotenv-check
 # Check exit code
 RUN if [ "$?" -ne 0 ]; then exit 1; fi
 RUN dotnet build . -c $BUILD_CONFIGURATION -o /app/build
