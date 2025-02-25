@@ -53,7 +53,9 @@ public abstract class Program {
                     s.studentID == student.studentID);
 
             if (existingStudent != null) {
-                var data = new { error = "A student with the same data already exists." };
+                var data = new {
+                    error = "A student with the same data already exists."
+                };
                 return Results.Json(data, statusCode: 409);
             }
 
