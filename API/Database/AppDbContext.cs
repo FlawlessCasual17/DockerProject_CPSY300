@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 namespace API.Database;
 
-public class AppContext(
-    DbContextOptions<AppContext> options
+public class AppDbContext(
+    DbContextOptions<AppDbContext> options
 ) : DbContext(options) {
     // Define a property for each table
     public DbSet<Students> Students { get; set; }

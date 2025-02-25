@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Database;
 
 public class Service {
-    AppContext? dbContext;
+    AppDbContext? dbContext;
 
     /// <summary>
     /// Initializes the database.
@@ -29,11 +29,11 @@ public class Service {
                 ?? throw new Exception("No connection string found.");
 
             // Create a new connection
-            var options = new DbContextOptionsBuilder<AppContext>()
+            var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseNpgsql(connString).Options;
 
             // Initialize the database context
-            dbContext = new AppContext(options);
+            dbContext = new AppDbContext(options);
 
             // Create the database and ensure it exists
             await dbContext.Database.EnsureCreatedAsync();
@@ -50,6 +50,6 @@ public class Service {
     /// <exception cref="Exception">
     /// Occurs when the database has not been initialized.
     /// </exception>
-    public AppContext GetDbContext()
+    public AppDbContext GetDbContext()
         => dbContext ?? throw new Exception("The Database has not been initialized.");
 }

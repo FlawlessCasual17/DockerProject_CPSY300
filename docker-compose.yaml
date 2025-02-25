@@ -1,13 +1,13 @@
 services:
   student_api:
     container_name: student_api
-    image: student-api
+    image: localhost/student-api:latest
     build:
       context: ./API
       dockerfile: ./Dockerfile
     ports:
-      - 8080:8080
-      - 7199:7199
+      - '8080:8080'
+      - '7199:7199'
   # web_app:
   #   container_name: web_app
   #   image: web-app
