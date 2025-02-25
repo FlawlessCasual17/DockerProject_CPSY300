@@ -8,7 +8,8 @@ public abstract class Program {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        // Learn more about configuring OpenAPI at
+        // https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
@@ -26,7 +27,8 @@ public abstract class Program {
         var dbContext = dbService.GetDbContext();
 
         // Check if the database connection is open
-        if (dbContext.Database.GetDbConnection().State != System.Data.ConnectionState.Open)
+        var isOpen = System.Data.ConnectionState.Open;
+        if (dbContext.Database.GetDbConnection().State != isOpen)
             await dbContext.Database.OpenConnectionAsync();
 
         // Create a route for GET requests
