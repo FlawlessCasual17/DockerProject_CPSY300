@@ -47,13 +47,13 @@ the app easily by using, `docker compose` or `podman compose`,
 * **Docker**
 
   ```sh
-  docker compose up -d
+  docker-compose up -d
   ```
 
 * **Podman**
 
   ```sh
-  podman compose up -d
+  podman-compose up -d
   ```
 
 Using either choice is the recommended way to
