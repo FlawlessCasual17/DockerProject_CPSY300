@@ -79,24 +79,23 @@ public abstract class Program {
             return Results.Created(route, stud);
         }).WithName("AddStudentData");
 
-        // ReSharper disable once InconsistentNaming
         // Create a route for PUT requests
         app.MapPut("/student/{studentID}", async (
-            Students stud, string studentID
+            Students stud, string studentId
         ) => {
             var date = stud.PresentDate;
             stud.PresentDate = date.ToUniversalTime();
 
             // Set stud.studentID to studentID
             // from the route if the former is null.
-            if (string.IsNullOrEmpty(stud.StudentId)) stud.StudentId = studentID;
+            if (string.IsNullOrEmpty(stud.StudentId)) stud.StudentId = studentId;
 
             // Check if a student doesn't exist using the provided ID.
-            var isExisting = dbContext.Students.Any(s => s.StudentId == studentID);
+            var isExisting = dbContext.Students.Any(s => s.StudentId == studentId);
 
             if (!isExisting) {
                 string[] msg = [
-                    $"The student with the id, '{studentID}' does not exist.",
+                    $"The student with the id, '{studentId}' does not exist.",
                     "Please create this new student using a POST request with this route:",
                     "/student"
                 ];
@@ -106,7 +105,7 @@ public abstract class Program {
             // ReSharper disable once MethodHasAsyncOverload
             // Update the student data
             dbContext.Students
-                .Where(s => s.StudentId == studentID)
+                .Where(s => s.StudentId == studentId)
                 .Update(s => new Students {
                     StudentId = stud.StudentId,
                     StudentName = string.IsNullOrEmpty(stud.StudentName) ? s.StudentName : stud.StudentName,
