@@ -2,6 +2,7 @@ using System.Data;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using API.Database;
+using Z.EntityFramework.Plus;
 namespace API;
 
 public abstract class Program {
@@ -41,80 +42,82 @@ public abstract class Program {
             // Retrieve all student data
             var students = await dbContext.Students.ToListAsync();
             return Results.Json(students, options);
-        }).WithName("GetAllStudentsData");
+        }).WithName("GetAllStudentData");
 
         // ReSharper disable once InconsistentNaming
         // Create a route for GET requests
-        app.MapGet("/student/{studentID:int}", async (int studentID) => {
+        app.MapGet("/student/{studentID}", async (string studentID) => {
             // Retrieve all student data
             var students = await dbContext.Students.ToListAsync();
-            var student = students.Find(s => s.studentID == studentID);
+            var student = students.Find(s => s.StudentId == studentID);
             return Results.Json(student, options);
         }).WithName("GetSpecificStudentData");
 
         // Create a route for POST requests
-        app.MapPost("/student", async (Students student) => {
-            var date = student.presentDate;
-            student.presentDate = date.ToUniversalTime();
+        app.MapPost("/student", async (Students stud) => {
+            var date = stud.PresentDate;
+            stud.PresentDate = date.ToUniversalTime();
 
             // Check if the student already exists
             var existingStudent = await dbContext.Students
                 .FirstOrDefaultAsync(s =>
-                    s.studentID == student.studentID &&
-                    s.studentName == student.studentName &&
-                    s.course == student.course &&
-                    s.presentDate == student.presentDate);
+                    s.StudentId == stud.StudentId &&
+                    s.StudentName == stud.StudentName &&
+                    s.Course == stud.Course &&
+                    s.PresentDate == stud.PresentDate);
 
-            if (existingStudent != null) {
-                const string msg = "A student with the same data already exists.";
-                return Results.Json(new { error = msg }, options, statusCode: 409);
-            }
+            if (existingStudent != null)
+                return Results.Json(new {
+                    error = "A student with the same data already exists."
+                }, options, statusCode: 409);
 
             // Add the student
-            dbContext.Students.Add(student);
+            dbContext.Students.Add(stud);
             await dbContext.SaveChangesAsync();
 
-            var route = $"/student/{student.studentID}";
-            return Results.Created(route, student);
-        }).WithName("SendStudentData");
+            var route = $"/student/{stud.StudentId}";
+            return Results.Created(route, stud);
+        }).WithName("AddStudentData");
 
         // ReSharper disable once InconsistentNaming
         // Create a route for PUT requests
-        app.MapPut("/student/{studentID:int}", async (
-            int studentID, Students student
+        app.MapPut("/student/{studentID}", async (
+            Students stud, string studentID
         ) => {
-            var date = student.presentDate;
-            student.presentDate = date.ToUniversalTime();
+            var date = stud.PresentDate;
+            stud.PresentDate = date.ToUniversalTime();
 
-            // Check if the user did NOT provide
-            // a studentID in the JSON body.
-            // This is to make sure the studentID comes
-            // from the URL, not the JSON body.
-            if (student.studentID != 0) {
+            // Set stud.studentID to studentID
+            // from the route if the former is null.
+            if (string.IsNullOrEmpty(stud.StudentId)) stud.StudentId = studentID;
+
+            // Check if a student doesn't exist using the provided ID.
+            var isExisting = dbContext.Students.Any(s => s.StudentId == studentID);
+
+            if (!isExisting) {
                 string[] msg = [
-                    "Please provide the 'studentID' in the URL, not in the JSON body.",
-                    "The route format should be: /student/<studentID>"
+                    $"The student with the id, '{studentID}' does not exist.",
+                    "Please create this new student using a POST request with this route:",
+                    "/student"
                 ];
-                return Results.Json(new { error = msg }, options, statusCode: 400);
+                return Results.Json(new { error = msg }, options, statusCode: 404);
             }
 
-            // Set the studentID to the studentID from the URL
-            student.studentID = studentID;
-
-            // Check if a student with the same
-            // studentID already exists.
-            var existingStudent = await dbContext.Students
-                .FirstOrDefaultAsync(s => s.studentID == student.studentID);
-
-            // Update or Add the student data
-            if (existingStudent != null) dbContext.Students.Update(student);
-            else dbContext.Students.Add(student);
-
+            // ReSharper disable once MethodHasAsyncOverload
+            // Update the student data
+            dbContext.Students
+                .Where(s => s.StudentId == studentID)
+                .Update(s => new Students {
+                    StudentId = stud.StudentId,
+                    StudentName = string.IsNullOrEmpty(stud.StudentName) ? s.StudentName : stud.StudentName,
+                    Course = string.IsNullOrEmpty(stud.Course) ? s.Course : stud.Course,
+                    PresentDate = stud.PresentDate
+                });
             await dbContext.SaveChangesAsync();
 
-            var route = $"/student/{student.studentID}";
-            return Results.Created(route, student);
-        }).WithName("UpdateOrAddStudentData");
+            var route = $"/student/{stud.StudentId}";
+            return Results.Created(route, stud);
+        }).WithName("UpdateStudentData");
 
         await app.RunAsync();
     }
