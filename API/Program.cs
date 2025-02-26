@@ -108,8 +108,10 @@ public abstract class Program {
                 .Where(s => s.StudentId == studentId)
                 .Update(s => new Students {
                     StudentId = stud.StudentId,
-                    StudentName = string.IsNullOrEmpty(stud.StudentName) ? s.StudentName : stud.StudentName,
-                    Course = string.IsNullOrEmpty(stud.Course) ? s.Course : stud.Course,
+                    StudentName = string.IsNullOrEmpty(stud.StudentName) ?
+                        s.StudentName : stud.StudentName,
+                    Course = string.IsNullOrEmpty(stud.Course) ?
+                        s.Course : stud.Course,
                     PresentDate = stud.PresentDate
                 });
             await dbContext.SaveChangesAsync();
