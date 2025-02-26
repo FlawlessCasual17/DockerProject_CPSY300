@@ -1,6 +1,32 @@
-# @API_HostAddress = http://localhost:8080
+@API_HostAddress = http://localhost:8080
 
-# # GET {{API_HostAddress}}/student/
-# # Accept: application/json
+GET {{API_HostAddress}}/student
+Accept: application/json
 
-# ###
+###
+
+GET {{API_HostAddress}}/000891164
+Accept: application/json
+
+###
+
+POST {{API_HostAddress}}/student
+Content-Type: application/json
+
+{
+    "studentID": "000891164",
+    "studentName": "Kris Schneider",
+    "course": "OS 300",
+    "presentDate": "2025-02-09"
+}
+
+###
+
+PUT {{API_HostAddress}}/student/000123443
+Content-Type: application/json
+
+{
+    "studentName": "Ben Schneider",
+    "course": "OS 300",
+    "presentDate": "2025-02-09"
+}
