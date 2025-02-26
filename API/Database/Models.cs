@@ -9,8 +9,9 @@ namespace API.Database;
 [Table("students")]
 public class Students {
     [Key]
+    [MaxLength(9)]
     [Required] [Column("student_id")]
-    public required int studentID { get; set; }
+    public required string studentID { get; set; }
 
     [MaxLength(100)]
     [Required] [Column("student_name")]
