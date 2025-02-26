@@ -80,7 +80,7 @@ public abstract class Program {
         }).WithName("AddStudentData");
 
         // Create a route for PUT requests
-        app.MapPut("/student/{studentID}", async (
+        app.MapPut("/student/{studentId}", async (
             Students stud, string studentId
         ) => {
             var date = stud.PresentDate;
