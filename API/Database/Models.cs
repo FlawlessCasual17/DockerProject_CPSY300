@@ -28,21 +28,6 @@ public class Students {
 
     [Column("present_date")]
     [JsonPropertyName("presentDate")]
-    [JsonConverter(typeof(DateTimeConverter))]
-    public DateTime PresentDate { get; set; }
-}
-
-/// <summary>
-/// A custom JSON converter for handling JSON null values.
-/// </summary>
-class DateTimeConverter : JsonConverter<DateTime> {
-    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
-        var isTokenTypeNull = reader.TokenType == JsonTokenType.Null;
-        var isNullOrEmpty = reader.TokenType == JsonTokenType.String && string.IsNullOrEmpty(reader.GetString());
-        return !(isTokenTypeNull || isNullOrEmpty) ?
-            DateTime.Parse(reader.GetString() ?? "0000-00-00") : DateTime.MinValue;
-    }
-
-    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-        => writer.WriteStringValue(value.ToString(CultureInfo.CurrentCulture));
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public DateTime PresentDate { get; set; } = DateTime.MinValue;
 }
