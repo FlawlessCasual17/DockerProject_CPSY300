@@ -12,7 +12,7 @@ public abstract class Program {
     /// Standard entry point. Nothing special.
     /// </summary>
     public static async Task Main() {
-        // Initialize the web API.
+        // Initialize the API server.
         var builder = WebApplication.CreateBuilder();
 
         // Add services to the container.
@@ -52,7 +52,7 @@ public abstract class Program {
         // Create a route for GET requests (using the student's ID).
         app.MapGet("/student/{studentId}", async (string studentId) => {
             // Retrieve all student data.
-            var students = (await dbContext.Students.ToListAsync());
+            var students = await dbContext.Students.ToListAsync();
 
             // Check if a student doesn't exist using the provided ID.
             var isExisting = students.Any(s => s.StudentId == studentId);
@@ -64,8 +64,8 @@ public abstract class Program {
 
             // Find this student using the provided ID,
             // and return the results afterwards.
-            var student = students.Find(s => s.StudentId == studentId);
-            return Results.Json(student, options);
+            var stud = students.Find(s => s.StudentId == studentId);
+            return Results.Json(stud, options);
         }).WithName("GetSpecificStudentData");
 
         // Create a route for POST requests.
@@ -137,7 +137,7 @@ public abstract class Program {
             return Results.Created($"/student/{stud.StudentId}", stud);
         }).WithName("UpdateStudentData");
 
-        await app.RunAsync();
+        await app.RunAsync(); // Run the API server.
     }
 
     /// <summary>
