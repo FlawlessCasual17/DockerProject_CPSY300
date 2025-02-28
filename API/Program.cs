@@ -54,7 +54,7 @@ public abstract class Program {
 
             if (!isExisting) {
                 string[] msg = [
-                    $"The student with the id, '{studentId}' does not exist.",
+                    $"A student with the id, '{studentId}' does not exist.",
                     "Please create this new student using a POST request with this route:",
                     "/student"
                 ];
@@ -107,7 +107,7 @@ public abstract class Program {
 
             if (!isExisting) {
                 string[] msg = [
-                    $"The student with the id, '{studentId}' does not exist.",
+                    $"A student with the id, '{studentId}' does not exist.",
                     "Please create this new student using a POST request with this route:",
                     "/student"
                 ];
