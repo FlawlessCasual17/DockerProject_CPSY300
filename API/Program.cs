@@ -145,7 +145,7 @@ public abstract class Program {
     /// to create a new student using a POST request.
     /// </summary>
     /// <param name="studentId">The student's ID</param>
-    /// <returns>An error message in an array.</returns>
+    /// <returns>An error message in a string array.</returns>
     static string[] ReqErrorMsg(string studentId) => [
         $"{Initial}, '{studentId}' does not exist.",
         "Please create this new student using a POST request with this route:",
