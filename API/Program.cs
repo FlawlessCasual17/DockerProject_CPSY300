@@ -54,10 +54,10 @@ public abstract class Program {
             // Retrieve all student data.
             var students = await dbContext.Students.ToListAsync();
 
-            // Check if a student doesn't exist using the provided ID.
-            var isExisting = students.Any(s => s.StudentId == studentId);
+            // Check if a student does not exist.
+            var isNotExisting = students.Any(s => s.StudentId == studentId);
 
-            if (!isExisting)
+            if (!isNotExisting)
                 return Results.Json(new {
                     error = ReqErrorMsg(studentId)
                 }, options, statusCode: 404);
@@ -76,11 +76,11 @@ public abstract class Program {
             // For later use.
             var studentId = stud.StudentId;
 
-            // Check if the student already exists
+            // Check if the student does exist.
             var isExisting = await dbContext.Students
                 .AnyAsync(s => s.StudentId == studentId);
 
-            if (!isExisting)
+            if (isExisting)
                 return Results.Json(new {
                     error = $"{Initial} same ID, '{studentId}' already exists."
                 }, options, statusCode: 409);
@@ -103,11 +103,11 @@ public abstract class Program {
             // from the route if the former is null.
             if (string.IsNullOrEmpty(stud.StudentId)) stud.StudentId = studentId;
 
-            // Check if a student doesn't exist using the provided ID.
-            var isExisting = await dbContext.Students
+            // Check if a student does not exist.
+            var isNotExisting = await dbContext.Students
                 .AnyAsync(s => s.StudentId == studentId);
 
-            if (!isExisting)
+            if (!isNotExisting)
                 return Results.Json(new {
                     error = ReqErrorMsg(studentId)
                 }, options, statusCode: 404);
@@ -147,7 +147,7 @@ public abstract class Program {
     /// <param name="studentId">The student's ID</param>
     /// <returns>An error message in a string array.</returns>
     static string[] ReqErrorMsg(string studentId) => [
-        $"{Initial}, '{studentId}' does not exist.",
+        $"{Initial} ID, '{studentId}' does not exist.",
         "Please create this new student using a POST request with this route:",
         "/student"
     ];
