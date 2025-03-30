@@ -153,7 +153,7 @@ public abstract class Program {
             await dbContext.SaveChangesAsync(); // Save the changes.
 
             return Results.Ok() // Return a status code of 200.
-        })
+        }).WithName("DeleteSpecificStudentData");
 
         await app.RunAsync(); // Run the API server.
     }
