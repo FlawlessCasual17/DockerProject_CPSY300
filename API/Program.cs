@@ -137,6 +137,24 @@ public abstract class Program {
             return Results.Created($"/student/{stud.StudentId}", stud);
         }).WithName("UpdateStudentData");
 
+        // Create a route for DELETE requests (using the student's ID).
+        app.MapDelete("/student/{studentId}", async (string studentId) => {
+            // Check if a student does not exist.
+            var isNotExisting = await dbContext.Students
+                .AnyAsync(s => s.StudentId == studentId);
+
+            if (!isNotExisting)
+                return Results.Json(new {
+                    error = ReqErrorMsg(studentId)
+                }, options, statusCode: 404);
+
+            // Delete the student based on the provided ID.
+            dbContext.Students.Where(s => s.StudentId == studentId).Delete();
+            await dbContext.SaveChangesAsync(); // Save the changes.
+
+            return Results.Ok() // Return a status code of 200.
+        })
+
         await app.RunAsync(); // Run the API server.
     }
 
