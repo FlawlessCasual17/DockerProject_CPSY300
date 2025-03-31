@@ -157,10 +157,10 @@ public abstract class Program {
     /// <returns>A JSON response with a 404 error code.</returns>
     static IResult NotFoundReponse(string studentId, JsonSerializerOptions options) =>
         Results.Json(new {
-            error = (string[]) [
+            error = new [] {
                 $"{Initial} ID, '{studentId}' does not exist.",
                 "Please create this new student using a POST request with this route:",
                 "/student"
-            ]
+            }
         }, options, statusCode: 404);
 }
