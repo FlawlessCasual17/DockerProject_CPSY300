@@ -46,7 +46,7 @@ public abstract class Program {
         app.MapGet("/student", async () => {
             // Retrieve all student data and return the results.
             var students = await dbContext.Students.ToListAsync();
-            return Results.Json(students, options);
+            return Results.Json(students, options, statusCode: 200);
         }).WithName("GetAllStudentData");
 
         // Create a route for GET requests (using the student's ID).
@@ -57,15 +57,12 @@ public abstract class Program {
             // Check if a student does not exist.
             var isNotExisting = students.Any(s => s.StudentId == studentId);
 
-            if (!isNotExisting)
-                return Results.Json(new {
-                    error = ReqErrorMsg(studentId)
-                }, options, statusCode: 404);
+            if (!isNotExisting) return NotFoundReponse(studentId, options);
 
             // Find this student using the provided ID,
             // and return the results afterwards.
             var stud = students.Find(s => s.StudentId == studentId);
-            return Results.Json(stud, options);
+            return Results.Json(stud, options, statusCode: 200);
         }).WithName("GetSpecificStudentData");
 
         // Create a route for POST requests.
@@ -80,10 +77,9 @@ public abstract class Program {
             var isExisting = await dbContext.Students
                 .AnyAsync(s => s.StudentId == studentId);
 
-            if (isExisting)
-                return Results.Json(new {
-                    error = $"{Initial} same ID, '{studentId}' already exists."
-                }, options, statusCode: 409);
+            var msg = $"{Initial} same ID, '{studentId}' already exists.";
+
+            if (isExisting) return Results.Json(new { error = msg }, options, statusCode: 409);
 
             // Add the student
             dbContext.Students.Add(stud);
@@ -107,11 +103,7 @@ public abstract class Program {
             var isNotExisting = await dbContext.Students
                 .AnyAsync(s => s.StudentId == studentId);
 
-            if (!isNotExisting)
-                return Results.Json(new {
-                    error = ReqErrorMsg(studentId)
-                }, options, statusCode: 404);
-
+            if (!isNotExisting) return NotFoundReponse(studentId, options);
 
             // NOTE: DO NOT USE the `UpdateAsync` method.
             // It will cause the cloud Postgres database
@@ -143,30 +135,32 @@ public abstract class Program {
             var isNotExisting = await dbContext.Students
                 .AnyAsync(s => s.StudentId == studentId);
 
-            if (!isNotExisting)
-                return Results.Json(new {
-                    error = ReqErrorMsg(studentId)
-                }, options, statusCode: 404);
+            if (!isNotExisting) return NotFoundReponse(studentId, options);
 
             // Delete the student based on the provided ID.
             dbContext.Students.Where(s => s.StudentId == studentId).Delete();
             await dbContext.SaveChangesAsync(); // Save the changes.
 
-            return Results.Ok() // Return a status code of 200.
+            // Return a status code of 200 with a message.
+            return Results.Json(new {
+                message = "Student deleted successfully"
+            }, options, statusCode: 200);
         }).WithName("DeleteSpecificStudentData");
 
         await app.RunAsync(); // Run the API server.
     }
 
     /// <summary>
-    /// Returns an error message that advises the user
-    /// to create a new student using a POST request.
+    /// Returns a JSON response with a 404 error code.
     /// </summary>
     /// <param name="studentId">The student's ID</param>
-    /// <returns>An error message in a string array.</returns>
-    static string[] ReqErrorMsg(string studentId) => [
-        $"{Initial} ID, '{studentId}' does not exist.",
-        "Please create this new student using a POST request with this route:",
-        "/student"
-    ];
+    /// <returns>A JSON response with a 404 error code.</returns>
+    static IResult NotFoundReponse(string studentId, JsonSerializerOptions options) =>
+        Results.Json(new {
+            error = (string[]) [
+                $"{Initial} ID, '{studentId}' does not exist.",
+                "Please create this new student using a POST request with this route:",
+                "/student"
+            ]
+        }, options, statusCode: 404);
 }
