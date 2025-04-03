@@ -154,6 +154,7 @@ public abstract class Program {
     /// Returns a JSON response with a 404 error code.
     /// </summary>
     /// <param name="studentId">The student's ID</param>
+    /// <param name="options">Configuration for JSON serialization</param>
     /// <returns>A JSON response with a 404 error code.</returns>
     static IResult NotFoundReponse(string studentId, JsonSerializerOptions options) =>
         Results.Json(new {
