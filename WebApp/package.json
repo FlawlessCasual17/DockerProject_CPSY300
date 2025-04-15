@@ -1,0 +1,18 @@
+{
+  "name": "webapp",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/solid-js": "^5.0.8",
+    "@tailwindcss/vite": "^4.1.4",
+    "astro": "^5.6.2",
+    "solid-js": "^1.9.5",
+    "tailwindcss": "^4.1.4"
+  }
+}
