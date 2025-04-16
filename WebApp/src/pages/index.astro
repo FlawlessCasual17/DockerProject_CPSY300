@@ -1,11 +1,33 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { createSignal } from 'solid-js';
 import Layout from '../layouts/Layout.astro';
+
+// TODO: Add code for creating a UI to manipulate the API of Student API (StudentDB)
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+
+const [studentData, setStudentData] = createSignal({
+    studentID: '',
+    studentName: '',
+    courseName: '',
+    Date: ''
+});
+
+// setStudentData(student => {
+//     student.
+// })
 ---
 
 <Layout>
-    <Welcome />
+    <!-- Get student data -->
+    <form class='flex flex-row flex-wrap bg-slate-100 border-b-blue-700 rounded-2xl bg'>
+        <h1 class='text-2xl'>Add New Student</h1>
+        <input
+            name='Student ID'
+            value={studentData().studentID}
+            placeholder='Put a Student ID here'
+            onchange={''}
+        />
+    </form>
 </Layout>

@@ -1,5 +1,5 @@
 {
   "yaml.schemas": {
-    "https://biomejs.dev/schemas/1.9.4/schema.json": "**/biome.json"
+    "https://biomejs.dev/schemas/latest/schema.json": "**/biome.json"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": { "ignoreUnknown": false, "ignore": [] },
   "formatter": {
     "enabled": true,
@@ -13,7 +13,30 @@
     "bracketSpacing": true
   },
   "organizeImports": { "enabled": true },
-  "linter": { "enabled": true, "rules": { "recommended": true } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "style": {
+        "noVar": "error",
+        "useConst": "warn"
+      },
+      "suspicious": {
+        "useAwait": "info"
+      },
+      "nursery": {
+        "noCommonJs": "info"
+      },
+      "correctness": {
+        "noConstAssign": "warn"
+      },
+      "security": {},
+      "complexity": {
+        "useFlatMap": "warn"
+      },
+      "performance": {},
+      "a11y": {}
+    }
+  },
   "javascript": {
     "formatter": {
       "jsxQuoteStyle": "single",
@@ -25,6 +48,22 @@
       "quoteStyle": "single",
       "attributePosition": "auto",
       "bracketSpacing": true
+    },
+    "linter": {
+      "enabled": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "include": ["*.svelte", "*.astro", "*.vue"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useConst": "off",
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ]
 }
