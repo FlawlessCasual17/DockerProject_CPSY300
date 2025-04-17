@@ -7,8 +7,12 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   integrations: [solidJs()],
-
   vite: {
     plugins: [tailwindcss()]
-  }
+  },
+  server: {
+    port: 8080,
+    open: '/'
+  },
+  base: '/'
 });

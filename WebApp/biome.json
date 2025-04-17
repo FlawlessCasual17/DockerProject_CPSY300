@@ -21,7 +21,9 @@
         "useConst": "warn"
       },
       "suspicious": {
-        "useAwait": "info"
+        "useAwait": "info",
+        "noExplicitAny": "off",
+        "noShadowRestrictedNames": "info"
       },
       "nursery": {
         "noCommonJs": "info"

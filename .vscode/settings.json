@@ -1,4 +1,10 @@
 {
+  "json.schemas": [
+    {
+      "fileMatch": "**/launchSettings.json",
+      "url": "https://json.schemastore.org/launchsettings.json"
+    }
+  ],
   "yaml.schemas": {
     "https://biomejs.dev/schemas/latest/schema.json": "**/biome.json"
   }

@@ -1,15 +1,13 @@
 ---
-import MetaData from '../components/sitedata'
+import Metadata from '../components/Metadata.astro'
+import '../styles/global.css'
 ---
 
-<MetaData title='Student API Interface' image='/favicon.svg' generator={Astro.generator} />
-<body class='p-6 m-4'>
-    <slot /> <!-- Do not remove this element. -->
+<Metadata
+    title='Student API Interface'
+    favicon='/favicon.svg'
+    description='A web app for interacting with the Student API'
+/>
+<body class='antialiased'>
+    <slot /> <!-- Do not remove the `<slot>` element (Unless you know what you are doing) -->
 </body>
-
-<style>
-    html, body {
-        width: 100%;
-        height: 100%;
-    }
-</style>
