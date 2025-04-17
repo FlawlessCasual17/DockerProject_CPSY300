@@ -12,7 +12,7 @@ export default function AddDataForm() {
         date: new Date()
     }, { equals: false });
 
-    function handleChange(event: Event) {
+    function handleInput(event: Event) {
         const target = event.target as HTMLInputElement;
         const key = target.id as keyof Student;
         // Finally, set student data
@@ -23,42 +23,54 @@ export default function AddDataForm() {
         }));
     }
 
+    function handleSubmit(event: SubmitEvent) {
+        // TODO: Add code here for handling submit (maybe use HTMLFormElement)
+    }
+
     return (
-       <form class='w-10 flex border bg-slate-100 border-blue-700 rounded-2xl' method='get'>
-            <h1 class='text-2xl'>Add New Student</h1>
+       <form
+            class='p-10 w-[336px] flex flex-col space-y-3 border bg-slate-100 border-slate-500 rounded-2xl'
+            method='get'
+            onSubmit={handleSubmit}
+       >
+            <h1 class='relative text-2xl bottom-2.5'>Add New Student</h1>
             <input
+                class='rounded border border-slate-900 bg-gray-300 p-1'
+                id='studentID'
                 type='text'
                 name='Student ID'
-                id='studentID'
                 value={studentData().studentID}
                 placeholder='Enter your Student ID here'
-                onInput={handleChange}
+                onInput={handleInput}
             />
             <input
+                class='rounded border border-slate-900 bg-gray-300 p-1'
+                id='studentName'
                 type='text'
                 name='Student Name'
-                id='studentName'
                 value={studentData().studentName}
                 placeholder='Enter your Student Name here'
-                onInput={handleChange}
+                onInput={handleInput}
             />
             <input
+                class='rounded border border-slate-900 bg-gray-300 p-1'
+                id='courseName'
                 type='text'
                 name='Course Name'
-                id='courseName'
                 value={studentData().courseName}
                 placeholder='Enter your Course Name here'
-                onInput={handleChange}
+                onInput={handleInput}
             />
             <input
+                class='rounded border border-slate-900 bg-gray-300 p-1'
+                id='date'
                 type='date'
                 name='Date'
-                id='date'
                 value={format(studentData().date, 'MM/dd/yyyy')}
                 placeholder='Enter your Date here'
-                onInput={handleChange}
+                onInput={handleInput}
             />
-            <button type='submit' class='border rounded'>
+            <button type='submit' class='border border-green-900 bg-green-500 rounded hover:cursor-pointer'>
                 Submit
             </button>
        </form>

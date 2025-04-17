@@ -3,11 +3,15 @@ import Metadata from '../components/Metadata.astro'
 import '../styles/global.css'
 ---
 
-<Metadata
-    title='Student API Interface'
-    favicon='/favicon.svg'
-    description='A web app for interacting with the Student API'
-/>
-<body class='antialiased'>
-    <slot /> <!-- Do not remove the `<slot>` element (Unless you know what you are doing) -->
-</body>
+<html lang='en'>
+    <Metadata
+        title='Student API Interface'
+        favicon='/favicon.svg'
+        description='A web app for interacting with the Student API'
+    />
+    <body>
+        <div class='antialiased p-6'>
+            <slot /> <!-- Do not remove the `<slot>` element (Unless you know what you are doing) -->
+        </div>
+    </body>
+</html>
