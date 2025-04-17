@@ -58,7 +58,9 @@ export default function AddDataForm() {
                 placeholder='Enter your Date here'
                 onInput={handleChange}
             />
-            <button class='border rounded'></button>
+            <button type='submit' class='border rounded'>
+                Submit
+            </button>
        </form>
     )
 }
