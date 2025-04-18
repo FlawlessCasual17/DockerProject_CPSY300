@@ -20,15 +20,21 @@ public abstract class Program {
         // https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
-        // // Add a new JSON converter for DateTime.
-        // builder.Services.AddControllers().AddJsonOptions(opts => {
-        //     opts.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
-        // });
+        // Add a new CORS policy.
+        const string policyName = "CorsPolicy";
+        builder.Services.AddCors(opts => opts.AddPolicy(policyName, builder => {
+            builder.AllowAnyOrigin();
+            builder.AllowAnyMethod();
+            builder.AllowAnyHeader();
+        }));
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment()) app.MapOpenApi();
+
+        // Enable CORS.
+        app.UseCors(policyName);
 
         app.UseHttpsRedirection(); // Enable HTTPS redirection.
 

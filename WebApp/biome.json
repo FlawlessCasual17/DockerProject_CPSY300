@@ -23,8 +23,7 @@
       "suspicious": {
         "useAwait": "info",
         "noExplicitAny": "off",
-        "noShadowRestrictedNames": "info",
-        "noCatchAssign": "off"
+        "noShadowRestrictedNames": "info"
       },
       "nursery": {
         "noCommonJs": "info"
