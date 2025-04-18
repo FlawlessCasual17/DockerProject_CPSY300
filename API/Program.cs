@@ -51,14 +51,14 @@ public abstract class Program {
         };
 
         // Create a route for GET requests.
-        app.MapGet("/api/student", async () => {
+        app.MapGet("/student", async () => {
             // Retrieve all student data and return the results.
             var students = await dbContext.Students.ToListAsync();
             return Results.Json(students, options, statusCode: 200);
         }).WithName("GetAllStudentData");
 
         // Create a route for GET requests (using the student's ID).
-        app.MapGet("/api/student/{studentId}", async (string studentId) => {
+        app.MapGet("/student/{studentId}", async (string studentId) => {
             // Retrieve all student data.
             var students = await dbContext.Students.ToListAsync();
 
@@ -74,7 +74,7 @@ public abstract class Program {
         }).WithName("GetSpecificStudentData");
 
         // Create a route for POST requests.
-        app.MapPost("/api/student", async (Students stud) => {
+        app.MapPost("/student", async (Students stud) => {
             var date = stud.PresentDate;
             stud.PresentDate = date.ToUniversalTime();
 
@@ -93,11 +93,11 @@ public abstract class Program {
             dbContext.Students.Add(stud);
             await dbContext.SaveChangesAsync(); // Save the changes.
 
-            return Results.Created($"/api/student/{studentId}", stud);
+            return Results.Created($"/student/{studentId}", stud);
         }).WithName("AddStudentData");
 
         // Create a route for PUT requests.
-        app.MapPut("/api/student/{studentId}", async (
+        app.MapPut("/student/{studentId}", async (
             Students stud, string studentId
         ) => {
             var date = stud.PresentDate;
@@ -134,11 +134,11 @@ public abstract class Program {
             await dbContext.SaveChangesAsync(); // Save the changes.
 
             // Return the results.
-            return Results.Created($"/api/student/{stud.StudentId}", stud);
+            return Results.Created($"/student/{stud.StudentId}", stud);
         }).WithName("UpdateStudentData");
 
         // Create a route for DELETE requests (using the student's ID).
-        app.MapDelete("/api/student/{studentId}", async (string studentId) => {
+        app.MapDelete("/student/{studentId}", async (string studentId) => {
             // Check if a student does not exist.
             var isNotExisting = await dbContext.Students
                 .AnyAsync(s => s.StudentId == studentId);
@@ -169,7 +169,7 @@ public abstract class Program {
             error = new [] {
                 $"{Initial} ID, '{studentId}' does not exist.",
                 "Please create this new student using a POST request with this route:",
-                "/api/student"
+                "/student"
             }
         }, options, statusCode: 404);
 }
