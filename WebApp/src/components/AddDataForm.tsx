@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { createSignal } from 'solid-js';
-// import { render } from 'solid-js/web';
 import type { Student } from '../types';
 
 const stringIsNullOrEmpty = (str: string) => str === null || str === undefined || str === '';
