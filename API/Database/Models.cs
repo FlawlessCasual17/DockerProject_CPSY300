@@ -9,8 +9,9 @@ namespace API.Database;
 [Table("students")]
 public class Students {
     [Key]
+    [Required]
     [MaxLength(9)]
-    [Required] [Column("student_id")]
+    [Column("student_id")]
     [JsonPropertyName("studentID")]
     public string? StudentId { get; set; }
 
@@ -26,6 +27,7 @@ public class Students {
 
     [Column("present_date")]
     [JsonPropertyName("Date")]
+    [JsonConverter(typeof(DateTimeConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public DateTime PresentDate { get; set; } = DateTime.MinValue;
 }

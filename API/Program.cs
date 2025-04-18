@@ -20,6 +20,11 @@ public abstract class Program {
         // https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
+        // // Add a new JSON converter for DateTime.
+        // builder.Services.AddControllers().AddJsonOptions(opts => {
+        //     opts.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+        // });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -40,7 +45,10 @@ public abstract class Program {
             await dbContextDb.OpenConnectionAsync();
 
         // Configure JSON serialization options.
-        var options = new JsonSerializerOptions { WriteIndented = true };
+        var options = new JsonSerializerOptions {
+            Converters = { new DateTimeConverter() },
+            WriteIndented = true
+        };
 
         // Create a route for GET requests.
         app.MapGet("/api/student", async () => {
@@ -68,7 +76,6 @@ public abstract class Program {
         // Create a route for POST requests.
         app.MapPost("/api/student", async (Students stud) => {
             var date = stud.PresentDate;
-            // date = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
             stud.PresentDate = date.ToUniversalTime();
 
             // For later use.
@@ -94,7 +101,6 @@ public abstract class Program {
             Students stud, string studentId
         ) => {
             var date = stud.PresentDate;
-            // date = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
             stud.PresentDate = date.ToUniversalTime();
 
             // Set stud.studentId to studentId
