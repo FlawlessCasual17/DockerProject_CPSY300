@@ -68,7 +68,7 @@ public abstract class Program {
         // Create a route for POST requests.
         app.MapPost("/api/student", async (Students stud) => {
             var date = stud.PresentDate;
-            date = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
+            // date = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
             stud.PresentDate = date.ToUniversalTime();
 
             // For later use.
@@ -94,7 +94,7 @@ public abstract class Program {
             Students stud, string studentId
         ) => {
             var date = stud.PresentDate;
-            date = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
+            // date = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
             stud.PresentDate = date.ToUniversalTime();
 
             // Set stud.studentId to studentId
