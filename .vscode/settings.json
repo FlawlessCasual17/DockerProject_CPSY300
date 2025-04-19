@@ -3,9 +3,10 @@
     {
       "fileMatch": "**/launchSettings.json",
       "url": "https://json.schemastore.org/launchsettings.json"
+    },
+    {
+      "fileMatch": "**/biome.json",
+      "url": "https://biomejs.dev/schemas/latest/schema.json"
     }
-  ],
-  "yaml.schemas": {
-    "https://biomejs.dev/schemas/latest/schema.json": "**/biome.json"
-  }
+  ]
 }

@@ -36,7 +36,9 @@
         "useFlatMap": "warn"
       },
       "performance": {},
-      "a11y": {}
+      "a11y": {
+        "useButtonType": "off"
+      }
     }
   },
   "javascript": {
