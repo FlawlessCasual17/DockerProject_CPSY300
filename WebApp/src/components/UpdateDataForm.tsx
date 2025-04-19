@@ -1,6 +1,6 @@
-import { createSignal, createEffect } from 'solid-js';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { createSignal } from 'solid-js';
 import type { Student } from '../types';
 
 dayjs.extend(customParseFormat);
@@ -8,10 +8,11 @@ dayjs.extend(customParseFormat);
 const dateFormat = 'YYYY-MM-DD';
 
 export default function UpdateDataForm() {
-    const [searchId, setSearchId] = createSignal('');
+    const [studentId, setStudentId] = createSignal('');
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<string | null>(null);
     const [success, setSuccess] = createSignal<string | null>(null);
+
     const [studentData, setStudentData] = createSignal<Student>({
         studentID: '',
         studentName: '',
@@ -20,41 +21,43 @@ export default function UpdateDataForm() {
     });
     const [foundStudent, setFoundStudent] = createSignal(false);
 
-    async function searchStudent() {
-        if (!searchId()) {
+    function searchStudent() {
+        if (!studentId()) {
             setError('Please enter a Student ID to search');
             return;
         }
 
-        try {
-            setLoading(true);
-            setError(null);
-            setSuccess(null);
+        (async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                setSuccess(null);
 
-            const response = await fetch(`http://127.0.0.1:8080/api/student/${searchId()}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
+                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (!response.ok) {
-                const errorMsg = data.error || 'Unknown error occurred.';
-                setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
+                if (!response.ok) {
+                    const errorMsg = data.error || 'Unknown error occurred.';
+                    setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
+                    setFoundStudent(false);
+                    console.error('Error fetching student:', data);
+                } else {
+                    setStudentData(data);
+                    setFoundStudent(true);
+                }
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
+                setError(msg);
                 setFoundStudent(false);
-                console.error('Error fetching student:', data);
-            } else {
-                setStudentData(data);
-                setFoundStudent(true);
+                console.error('Failed to fetch student:', msg);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
-            setError(msg);
-            setFoundStudent(false);
-            console.error('Failed to fetch student:', msg);
-        } finally {
-            setLoading(false);
-        }
+        })()
     }
 
     function handleInput(event: Event) {
@@ -75,37 +78,39 @@ export default function UpdateDataForm() {
         });
     }
 
-    async function handleSubmit(event: SubmitEvent) {
+    function handleSubmit(event: SubmitEvent) {
         event.preventDefault();
 
-        try {
-            setLoading(true);
-            setError(null);
-            setSuccess(null);
+        (async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                setSuccess(null);
 
-            const response = await fetch(`http://127.0.0.1:8080/api/student/${searchId()}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(studentData())
-            });
+                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(studentData())
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (!response.ok) {
-                const errorMsg = data.error || 'Unknown error occurred.';
-                setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
-                console.error('Error updating student:', data);
-            } else {
-                setSuccess('Student updated successfully!');
-                setStudentData(data);
+                if (!response.ok) {
+                    const errorMsg = data.error || 'Unknown error occurred.';
+                    setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
+                    console.error('Error updating student:', data);
+                } else {
+                    setSuccess('Student updated successfully!');
+                    setStudentData(data);
+                }
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
+                setError(msg);
+                console.error('Failed to update student:', msg);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
-            setError(msg);
-            console.error('Failed to update student:', msg);
-        } finally {
-            setLoading(false);
-        }
+        })()
     }
 
     return (
@@ -117,8 +122,8 @@ export default function UpdateDataForm() {
                     class='flex-1 rounded-lg border-2 border-slate-900 bg-gray-300 p-1'
                     type='text'
                     placeholder='Enter Student ID'
-                    value={searchId()}
-                    onInput={(e) => setSearchId(e.currentTarget.value)}
+                    value={studentId()}
+                    onInput={(e) => setStudentId(e.currentTarget.value)}
                 />
                 <button
                     class='rounded-lg border-2 border-blue-900 bg-blue-600 p-1 px-4 text-white hover:cursor-pointer hover:bg-blue-400 hover:border-blue-600 transition-colors'

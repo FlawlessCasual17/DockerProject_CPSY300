@@ -64,30 +64,30 @@ export default function RetrieveDataForm() {
 
             {/* biome-ignore lint/style/noNonNullAssertion: <explanation> */}
             {!loading() && studentData()!.length > 0 && (
-            <div class='overflow-x-auto'>
-                <table class='w-full border-collapse'>
-                    <thead>
-                        <tr class='bg-slate-200'>
-                            <th class='border border-slate-300 p-2 text-left'>ID</th>
-                            <th class='border border-slate-300 p-2 text-left'>Name</th>
-                            <th class='border border-slate-300 p-2 text-left'>Course</th>
-                            <th class='border border-slate-300 p-2 text-left'>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <For each={studentData()}>
-                        {(student) => (<tr class='hover:bg-slate-50'>
-                            <td class='border border-slate-300 p-2'>{student.studentID}</td>
-                            <td class='border border-slate-300 p-2'>{student.studentName}</td>
-                            <td class='border border-slate-300 p-2'>{student.courseName}</td>
-                            <td class='border border-slate-300 p-2'>
-                            {new Date(student.Date).toLocaleDateString()}
-                            </td>
-                        </tr>)}
-                    </For>
-                    </tbody>
-                </table>
-            </div>
+                <div class='overflow-x-auto'>
+                    <table class='w-full border-collapse'>
+                        <thead>
+                            <tr class='bg-slate-200'>
+                                <th class='border border-slate-300 p-2 text-left'>ID</th>
+                                <th class='border border-slate-300 p-2 text-left'>Name</th>
+                                <th class='border border-slate-300 p-2 text-left'>Course</th>
+                                <th class='border border-slate-300 p-2 text-left'>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <For each={studentData()}>
+                            {(student) => (<tr class='hover:bg-slate-50'>
+                                <td class='border border-slate-300 p-2'>{student.studentID}</td>
+                                <td class='border border-slate-300 p-2'>{student.studentName}</td>
+                                <td class='border border-slate-300 p-2'>{student.courseName}</td>
+                                <td class='border border-slate-300 p-2'>
+                                {new Date(student.Date).toLocaleDateString()}
+                                </td>
+                            </tr>)}
+                        </For>
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
   );

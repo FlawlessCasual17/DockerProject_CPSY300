@@ -8,7 +8,7 @@ export default function RetrieveSpecificDataForm() {
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<string | null>(null);
 
-    async function handleSubmit(event: SubmitEvent) {
+    function handleSubmit(event: SubmitEvent) {
         event.preventDefault();
 
         if (!studentId()) {
@@ -16,32 +16,34 @@ export default function RetrieveSpecificDataForm() {
             return;
         }
 
-        try {
-            setLoading(true);
-            setError(null);
-            setStudent(null);
+        (async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                setStudent(null);
 
-            const response = await fetch(`http://127.0.0.1:8080/api/student/${studentId()}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
+                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (!response.ok) {
-                const error = data.error || 'Unknown error occurred.';
-                setError(Array.isArray(error) ? error.join('\n') : error);
-                console.error('An error occurred\n', data);
-            } else {
-                setStudent(data);
+                if (!response.ok) {
+                    const error = data.error || 'Unknown error occurred.';
+                    setError(Array.isArray(error) ? error.join('\n') : error);
+                    console.error('An error occurred\n', data);
+                } else {
+                    setStudent(data);
+                }
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
+                setError(msg);
+                console.error('Failed to fetch student\n', msg);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
-            setError(msg);
-            console.error('Failed to fetch student\n', msg);
-        } finally {
-            setLoading(false);
-        }
+        })()
     }
 
     return (
@@ -82,16 +84,16 @@ export default function RetrieveSpecificDataForm() {
                     <h2 class='text-xl font-bold mb-2'>Student Details</h2>
                     <div class='grid grid-cols-[auto_1fr] gap-2'>
                         <div class='font-bold'>ID:</div>
-                        <div>{student()!.studentID}</div>
+                        <div>{student()?.studentID}</div>
 
                         <div class='font-bold'>Name:</div>
-                        <div>{student()!.studentName}</div>
+                        <div>{student()?.studentName}</div>
 
                         <div class='font-bold'>Course:</div>
-                        <div>{student()!.courseName}</div>
+                        <div>{student()?.courseName}</div>
 
                         <div class='font-bold'>Date:</div>
-                        <div>{dayjs(student()!.Date).format('YYYY-MM-DD')}</div>
+                        <div>{dayjs(student()?.Date).format('YYYY-MM-DD')}</div>
                     </div>
                 </div>
             )}
