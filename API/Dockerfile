@@ -9,8 +9,8 @@ ARG BUILD_CONFIGURATION=Development
 # Set shell to bash
 RUN exec /bin/bash
 # Install rsync
-RUN sh -c 'apt update && apt install -y rsync' > /dev/null
-RUN sh -c 'apt autoremove -y && apt clean -y' > /dev/null
+RUN sh -c 'apt update && apt install -y rsync' > /dev/null && \
+    sh -c 'apt autoremove -y && apt clean -y' > /dev/null
 WORKDIR /src
 COPY *.csproj ./API/
 WORKDIR /src/API
@@ -22,8 +22,8 @@ COPY . ./tmp/
 RUN rsync -r --no-R '--exclude=/bin' \
     '--exclude=/obj' ./tmp/ . > /dev/null
 # Remove the temporary directory
-RUN rm -rf ./tmp/
-RUN chmod +x ./dotenv-check && ./dotenv-check
+RUN rm -rf ./tmp/ && \
+    chmod +x ./dotenv-check && ./dotenv-check
 # Check exit code
 RUN if [ "$?" -ne 0 ]; then exit 1; fi
 RUN dotnet build . -c $BUILD_CONFIGURATION -o /app/build

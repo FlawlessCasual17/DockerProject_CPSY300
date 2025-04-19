@@ -1,4 +1,5 @@
 services:
+  # student api
   student_api:
     container_name: student_api
     image: localhost/student-api:latest
@@ -8,14 +9,14 @@ services:
     ports:
       - '8080:8080'
       - '7199:7199'
-  # web_app:
-  #   container_name: web_app
-  #   image: web-app
-  #   build:
-  #     context: .
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - 5067:5067
-  #     - 7049:7049
-  #   depends_on:
-  #     - student_api
+  # web app
+  web_app:
+    container_name: web_app
+    image: localhost/web-app:latest
+    build:
+      context: ./WebApp
+      dockerfile: ./Dockerfile
+    ports:
+      - 7995:7995
+    depends_on:
+      - student_api

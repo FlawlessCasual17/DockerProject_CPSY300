@@ -7,6 +7,10 @@
     {
       "fileMatch": "**/biome.json",
       "url": "https://biomejs.dev/schemas/latest/schema.json"
+    },
+    {
+      "fileMatch": "**/.hadolint.yaml",
+      "url": "https://raw.githubusercontent.com/hadolint/hadolint/master/contrib/hadolint.json"
     }
   ]
 }
