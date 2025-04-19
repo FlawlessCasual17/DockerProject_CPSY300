@@ -52,7 +52,7 @@ public abstract class Program {
 
         // Configure JSON serialization options.
         var options = new JsonSerializerOptions {
-            Converters = { new DateTimeConverter() },
+            Converters = { new DateOnlyConverter() },
             WriteIndented = true
         };
 
@@ -81,9 +81,6 @@ public abstract class Program {
 
         // Create a route for POST requests.
         app.MapPost("/student", async (Students stud) => {
-            var date = stud.PresentDate;
-            stud.PresentDate = date.ToUniversalTime();
-
             // For later use.
             var studentId = stud.StudentId;
 
@@ -106,9 +103,6 @@ public abstract class Program {
         app.MapPut("/student/{studentId}", async (
             Students stud, string studentId
         ) => {
-            var date = stud.PresentDate;
-            stud.PresentDate = date.ToUniversalTime();
-
             // Set stud.studentId to studentId
             // from the route if the former is null.
             if (string.IsNullOrEmpty(stud.StudentId)) stud.StudentId = studentId;
@@ -133,9 +127,9 @@ public abstract class Program {
                     StudentId = stud.StudentId,
                     StudentName = string.IsNullOrEmpty(stud.StudentName) ?
                         s.StudentName : stud.StudentName,
-                    Course = string.IsNullOrEmpty(stud.Course) ?
-                        s.Course : stud.Course,
-                    PresentDate = stud.PresentDate
+                    CourseName = string.IsNullOrEmpty(stud.CourseName) ?
+                        s.CourseName : stud.CourseName,
+                    Date = stud.Date
                 });
             await dbContext.SaveChangesAsync(); // Save the changes.
 

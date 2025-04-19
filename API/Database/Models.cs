@@ -23,11 +23,11 @@ public class Students {
     [MaxLength(100)]
     [Column("course")]
     [JsonPropertyName("courseName")]
-    public string? Course { get; set; }
+    public string? CourseName { get; set; }
 
     [Column("present_date")]
     [JsonPropertyName("Date")]
-    [JsonConverter(typeof(DateTimeConverter))]
+    [JsonConverter(typeof(DateOnlyConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public DateTime PresentDate { get; set; } = DateTime.MinValue;
+    public DateOnly Date { get; set; } = DateOnly.MinValue;
 }

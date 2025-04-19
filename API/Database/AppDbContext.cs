@@ -20,10 +20,10 @@ public class AppDbContext(
             student.HasKey(s => s.StudentId);
             student.Property(s => s.StudentName)
                 .HasColumnName("student_name");
-            student.Property(s => s.Course)
-                .HasColumnName("course");
-            student.Property(s => s.PresentDate)
-                .HasColumnName("present_date");
+            student.Property(s => s.CourseName)
+                .HasColumnName("course_name");
+            student.Property(s => s.Date)
+                .HasColumnName("date");
         });
     }
 }
