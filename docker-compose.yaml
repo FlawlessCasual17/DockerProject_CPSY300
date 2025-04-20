@@ -8,8 +8,6 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - 7995:7995
-    depends_on:
-      - student_api
   # student api
   student_api:
     container_name: StudentRestfulAPI
