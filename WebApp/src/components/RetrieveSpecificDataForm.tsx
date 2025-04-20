@@ -1,5 +1,5 @@
-import { createSignal } from 'solid-js';
 import dayjs from 'dayjs';
+import { createSignal } from 'solid-js';
 import type { Student } from '../types';
 
 export default function RetrieveSpecificDataForm() {
@@ -45,8 +45,8 @@ export default function RetrieveSpecificDataForm() {
     }
 
     return (
-        <div class='rounded-2xl border p-6 flex flex-col space-y-4 bg-slate-100 border-slate-500 w-full max-w-lg'>
-            <h1 class='text-2xl font-bold'>Find Student</h1>
+        <div class='rounded-2xl border p-10 w-96 flex flex-col space-y-4 bg-slate-100 border-slate-500 scale-[135%]'>
+            <h1 class='relative text-2xl bottom-2.5'>Find Student</h1>
 
             <form onSubmit={handleSubmit} class='flex flex-col space-y-4'>
                 <label for='studentId' class='flex flex-col'>
@@ -56,7 +56,7 @@ export default function RetrieveSpecificDataForm() {
                         id='studentId'
                         type='text'
                         value={studentId()}
-                        onInput={(e) => setStudentId(e.currentTarget.value)}
+                        onInput={e => setStudentId(e.currentTarget.value)}
                         placeholder='Enter Student ID'
                         required
                     />
@@ -91,7 +91,7 @@ export default function RetrieveSpecificDataForm() {
                         <div>{student()?.courseName}</div>
 
                         <div class='font-bold'>Date:</div>
-                        <div>{dayjs(student()?.Date).format('YYYY-MM-DD')}</div>
+                        <div>{dayjs(student()?.Date).format('DD/MM/YYYY')}</div>
                     </div>
                 </div>
             )}

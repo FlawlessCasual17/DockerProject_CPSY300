@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { For, createEffect, createSignal } from 'solid-js';
 import type { Student } from '../types';
 
@@ -7,9 +8,7 @@ export default function RetrieveDataForm() {
 
     const [error, setError] = createSignal<string | null>(null);
 
-    createEffect(() => {
-        handleClick();
-    });
+    createEffect(() => handleClick());
 
     async function handleClick() {
         try {
@@ -28,6 +27,7 @@ export default function RetrieveDataForm() {
             } else {
                 setStudentData(data);
                 console.log('Student data received\n', data);
+                setLoading(false);
             }
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
@@ -37,8 +37,8 @@ export default function RetrieveDataForm() {
     }
 
     return (
-        <div class='rounded-2xl border p-6 flex flex-col space-y-4 bg-slate-100 border-slate-500 w-full max-w-3xl'>
-            <h1 class='text-2xl font-bold'>All Students</h1>
+        <div class='rounded-2xl border p-10 w-[38rem] h-72 flex flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'>
+            <h1 class='relative text-2xl bottom-2.5'>All Students</h1>
 
             <button
                 class='w-40 rounded-lg border-2 border-blue-900 bg-blue-600 p-1 text-white hover:cursor-pointer hover:bg-blue-400 hover:border-blue-600 transition-colors'
@@ -51,7 +51,7 @@ export default function RetrieveDataForm() {
 
             {error() && (
                 <div class='font-mono text-red-500 p-2 border border-red-300 bg-red-50 rounded'>
-                ERROR: {error()}
+                    ERROR: {error()}
                 </div>
             )}
 
@@ -63,7 +63,7 @@ export default function RetrieveDataForm() {
             {/* biome-ignore lint/style/noNonNullAssertion: <explanation> */}
             {!loading() && studentData()!.length > 0 && (
                 <div class='overflow-x-auto'>
-                    <table class='w-full border-collapse'>
+                    <table class='border-collapse'>
                         <thead>
                             <tr class='bg-slate-200'>
                                 <th class='border border-slate-300 p-2 text-left'>ID</th>
@@ -79,7 +79,7 @@ export default function RetrieveDataForm() {
                                 <td class='border border-slate-300 p-2'>{student.studentName}</td>
                                 <td class='border border-slate-300 p-2'>{student.courseName}</td>
                                 <td class='border border-slate-300 p-2'>
-                                {new Date(student.Date).toLocaleDateString()}
+                                {dayjs(student.Date).format('DD/MM/YYYY')}
                                 </td>
                             </tr>)}
                         </For>

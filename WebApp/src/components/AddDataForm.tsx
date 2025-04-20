@@ -132,9 +132,11 @@ export default function AddDataForm() {
             >
                 Submit Data
             </button>
-            <div is='div' class='font-mono relative text-red-500 leading-10' hidden={error() === null}>
-                ERROR: {error()}
-            </div>
+            {error() && (
+                <div class='font-mono text-red-500 p-2 border border-red-300 bg-red-50 rounded'>
+                    {error()}
+                </div>
+            )}
         </form>
     );
 }

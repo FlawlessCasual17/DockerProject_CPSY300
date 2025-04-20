@@ -21,11 +21,13 @@ import Layout from '../layouts/Layout.astro';
             <!-- Delete student data -->
             <DeleteDataForm client:load />
         </div>
+        <div class='relative p-10 m-10 left-[2.45rem]'>
+            <!-- Retrieve student data -->
+            <RetrieveDataForm client:load />
+        </div>
+        <div class='relative p-10 m-10'>
+            <!-- Retrieve student data by ID -->
+            <RetrieveSpecificDataForm client:load />
+        </div>
     </div>
-    <!-- <div class='absolute flex flex-col space-x-12 p-10 m-10'> -->
-        <!-- Get student data -->
-        <!-- <RetrieveDataForm client:load /> -->
-        <!-- Get student data by ID -->
-        <!-- <RetrieveSpecificDataForm client:load /> -->
-    <!-- </div> -->
 </Layout>
