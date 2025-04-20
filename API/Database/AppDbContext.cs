@@ -5,7 +5,7 @@ public class AppDbContext(
     DbContextOptions<AppDbContext> options
 ) : DbContext(options) {
     // Define a property for each table
-    public DbSet<Students> Students { get; set; }
+    public DbSet<Students>? Students { get; set; }
 
     // NOTE:
     // No need to use `OnConfiguring()` here since
@@ -15,7 +15,7 @@ public class AppDbContext(
         base.OnModelCreating(modelBuilder);
 
         // What does this do? It maps the `Students` class to the `students` table
-        modelBuilder.Entity<Students>((student) => {
+        modelBuilder.Entity<Students>(student => {
             student.ToTable("students");
             student.HasKey(s => s.StudentId);
             student.Property(s => s.StudentName)

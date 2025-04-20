@@ -1,14 +1,18 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+namespace API.Helpers;
 
 /// <summary>
 /// Custom JSON converter for DateOnly.
 /// </summary>
 public class DateOnlyConverter : JsonConverter<DateOnly> {
-    static readonly string[] DateOnlyFormats = {
+    static readonly string[] FORMATS = {
         "dd/MM/yyyy",
         "MM/dd/yyyy",
+        "yyyy/MM/dd",
+        "dd-MM-yyyy",
+        "MM-dd-yyyy",
         "yyyy-MM-dd"
         // Add any other formats you want to support
     };
@@ -18,19 +22,15 @@ public class DateOnlyConverter : JsonConverter<DateOnly> {
 
         if (string.IsNullOrEmpty(dateString)) return DateOnly.MinValue;
 
-        if (DateOnly.TryParseExact(
+        return DateOnly.TryParseExact(
             dateString,
-            DateOnlyFormats,
+            FORMATS,
             CultureInfo.InvariantCulture,
             DateTimeStyles.None,
-            out DateOnly date
-        ))
-            return date;
-
-        return DateOnly.Parse(dateString);
+            out var date
+        ) ? date : DateOnly.Parse(dateString);
     }
 
-    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options) {
-        writer.WriteStringValue(value.ToString("yyyy-MM-dd"));
-    }
+    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
+        => writer.WriteStringValue(value.ToString("yyyy-MM-dd"));
 }

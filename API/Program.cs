@@ -2,6 +2,7 @@ using System.Data;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using API.Database;
+using API.Helpers;
 using Z.EntityFramework.Plus;
 namespace API;
 
@@ -12,37 +13,34 @@ public abstract class Program {
     /// Standard entry point. Nothing special.
     /// </summary>
     public static async Task Main() {
-        // Initialize the API server.
+        // Initialize the API server
         var builder = WebApplication.CreateBuilder();
 
-        // Add services to the container.
-        // Learn more about configuring OpenAPI at
-        // https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+        // Add a new CORS policy
+        builder.Services.AddCors(opts => {
+            opts.AddPolicy("CorsPolicy", builder => {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+            });
+        });
+        builder.Services.AddRouting(); // Add routing services
+        builder.Services.AddOpenApi(); // Add OpenAPI services
 
-        // Add a new CORS policy.
-        const string policyName = "CorsPolicy";
-        builder.Services.AddCors(opts => opts.AddPolicy(policyName, builder => {
-            builder.AllowAnyOrigin();
-            builder.AllowAnyMethod();
-            builder.AllowAnyHeader();
-        }));
-
+        // Build the API server
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment()) app.MapOpenApi();
+        app.UseCors("CorsPolicy"); // Enable CORS
+        app.UseRouting(); // Enable routing
+        app.MapOpenApi(); // Map the OpenAPI route
+        // app.UseAuthorization();
+        // app.UseAuthentication();
 
-        // Enable CORS.
-        app.UseCors(policyName);
-
-        app.UseHttpsRedirection(); // Enable HTTPS redirection.
-
-        // Initialize a new instance of the database.
+        // Initialize a new instance of the database
         var dbService = new Service();
         await dbService.Initialize();
 
-        // Retrieve the database context.
+        // Retrieve the database context
         var dbContext = dbService.GetDbContext();
 
         // Check if the database connection is open
@@ -56,36 +54,36 @@ public abstract class Program {
             WriteIndented = true
         };
 
-        // Create a route for GET requests.
+        // Create a route for GET requests
         app.MapGet("/student", async () => {
             // Retrieve all student data and return the results.
-            var students = await dbContext.Students.ToListAsync();
+            var students = await dbContext.Students!.ToListAsync();
             return Results.Json(students, options, statusCode: 200);
         }).WithName("GetAllStudentData");
 
-        // Create a route for GET requests (using the student's ID).
+        // Create a route for GET requests (using the student's ID)
         app.MapGet("/student/{studentId}", async (string studentId) => {
-            // Retrieve all student data.
-            var students = await dbContext.Students.ToListAsync();
+            // Retrieve all student data
+            var students = await dbContext.Students!.ToListAsync();
 
-            // Check if a student does not exist.
+            // Check if a student does not exist
             var isNotExisting = students.Any(s => s.StudentId == studentId);
 
             if (!isNotExisting) return NotFoundReponse(studentId, options);
 
             // Find this student using the provided ID,
-            // and return the results afterwards.
+            // and return the results afterwards
             var stud = students.Find(s => s.StudentId == studentId);
             return Results.Json(stud, options, statusCode: 200);
         }).WithName("GetSpecificStudentData");
 
-        // Create a route for POST requests.
+        // Create a route for POST requests
         app.MapPost("/student", async (Students stud) => {
             // For later use.
             var studentId = stud.StudentId;
 
-            // Check if the student does exist.
-            var isExisting = await dbContext.Students
+            // Check if the student does exist
+            var isExisting = await dbContext.Students!
                 .AnyAsync(s => s.StudentId == studentId);
 
             var msg = $"{Initial} same ID, '{studentId}' already exists.";
@@ -93,22 +91,22 @@ public abstract class Program {
             if (isExisting) return Results.Json(new { error = msg }, options, statusCode: 409);
 
             // Add the student
-            dbContext.Students.Add(stud);
+            dbContext.Students!.Add(stud);
             await dbContext.SaveChangesAsync(); // Save the changes.
 
             return Results.Created($"/student/{studentId}", stud);
         }).WithName("AddStudentData");
 
-        // Create a route for PUT requests.
+        // Create a route for PUT requests
         app.MapPut("/student/{studentId}", async (
             Students stud, string studentId
         ) => {
             // Set stud.studentId to studentId
-            // from the route if the former is null.
+            // from the route if the former is null
             if (string.IsNullOrEmpty(stud.StudentId)) stud.StudentId = studentId;
 
-            // Check if a student does not exist.
-            var isNotExisting = await dbContext.Students
+            // Check if a student does not exist
+            var isNotExisting = await dbContext.Students!
                 .AnyAsync(s => s.StudentId == studentId);
 
             if (!isNotExisting) return NotFoundReponse(studentId, options);
@@ -121,7 +119,7 @@ public abstract class Program {
             // to affect the same row.
             // The solution is to use the `Update` method.
             // Update the student data (synchronously).
-            dbContext.Students
+            dbContext.Students!
                 .Where(s => s.StudentId == studentId)
                 .Update(s => new Students {
                     StudentId = stud.StudentId,
@@ -131,7 +129,7 @@ public abstract class Program {
                         s.CourseName : stud.CourseName,
                     Date = stud.Date
                 });
-            await dbContext.SaveChangesAsync(); // Save the changes.
+            await dbContext.SaveChangesAsync(); // Save the changes
 
             // Return the results.
             return Results.Created($"/student/{stud.StudentId}", stud);
@@ -140,13 +138,13 @@ public abstract class Program {
         // Create a route for DELETE requests (using the student's ID).
         app.MapDelete("/student/{studentId}", async (string studentId) => {
             // Check if a student does not exist.
-            var isNotExisting = await dbContext.Students
+            var isNotExisting = await dbContext.Students!
                 .AnyAsync(s => s.StudentId == studentId);
 
             if (!isNotExisting) return NotFoundReponse(studentId, options);
 
-            // Delete the student based on the provided ID.
-            dbContext.Students.Where(s => s.StudentId == studentId).Delete();
+            // Delete the student based on the provided ID
+            dbContext.Students!.Where(s => s.StudentId == studentId).Delete();
             await dbContext.SaveChangesAsync(); // Save the changes.
 
             // Return a status code of 200 with a message.
