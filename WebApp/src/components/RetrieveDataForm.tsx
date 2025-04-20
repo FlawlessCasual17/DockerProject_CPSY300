@@ -33,8 +33,6 @@ export default function RetrieveDataForm() {
             const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
             setError(msg);
             console.error('Failed to fetch students\n', msg);
-        } finally {
-            setLoading(false);
         }
     }
 

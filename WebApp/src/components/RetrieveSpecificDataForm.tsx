@@ -40,8 +40,6 @@ export default function RetrieveSpecificDataForm() {
                 const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
                 setError(msg);
                 console.error('Failed to fetch student\n', msg);
-            } finally {
-                setLoading(false);
             }
         })()
     }

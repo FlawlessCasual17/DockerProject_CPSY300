@@ -107,8 +107,6 @@ export default function UpdateDataForm() {
                 const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
                 setError(msg);
                 console.error('Failed to update student:', msg);
-            } finally {
-                setLoading(false);
             }
         })()
     }

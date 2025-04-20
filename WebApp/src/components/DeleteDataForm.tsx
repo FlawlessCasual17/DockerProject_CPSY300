@@ -82,8 +82,6 @@ export default function DeleteDataForm() {
                 const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
                 setError(msg);
                 console.error('Failed to delete student:', msg);
-            } finally {
-                setLoading(false);
             }
         })()
     }
