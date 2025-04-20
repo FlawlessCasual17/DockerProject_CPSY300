@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { For, createEffect, createSignal } from 'solid-js';
 import type { Student } from '../types';
+
+dayjs.extend(customParseFormat);
 
 export default function RetrieveDataForm() {
     const [studentData, setStudentData] = createSignal<Student[]>();
     const [loading, setLoading] = createSignal(true);
-
     const [error, setError] = createSignal<string | null>(null);
 
     createEffect(() => handleClick());
@@ -13,9 +15,12 @@ export default function RetrieveDataForm() {
     async function handleClick() {
         try {
             setLoading(true);
-            const response = await fetch('http://127.0.0.1:8080/student', {
+            const response = await fetch('http://localhost:8080/student', {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
             });
 
             const data = await response.json();
@@ -37,11 +42,11 @@ export default function RetrieveDataForm() {
     }
 
     return (
-        <div class='rounded-2xl border p-10 w-[38rem] h-72 flex flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'>
+        <div class='retrieve-data-form'>
             <h1 class='relative text-2xl bottom-2.5'>All Students</h1>
 
             <button
-                class='w-40 rounded-lg border-2 border-blue-900 bg-blue-600 p-1 text-white hover:cursor-pointer hover:bg-blue-400 hover:border-blue-600 transition-colors'
+                class='w-40 rounded-lg blue-button'
                 onClick={handleClick}
             >
                 Refresh Data
@@ -79,7 +84,7 @@ export default function RetrieveDataForm() {
                                 <td class='border border-slate-300 p-2'>{student.studentName}</td>
                                 <td class='border border-slate-300 p-2'>{student.courseName}</td>
                                 <td class='border border-slate-300 p-2'>
-                                {dayjs(student.Date).format('DD/MM/YYYY')}
+                                    {dayjs(student.Date).format('DD/MM/YYYY')}
                                 </td>
                             </tr>)}
                         </For>

@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+.blue-button {
+    @apply border-2 border-blue-900 bg-blue-600 p-1 px-4
+        text-white hover:cursor-pointer hover:bg-blue-400
+        hover:border-blue-600 transition-colors;
+}
+
+.delete-button {
+    @apply border-2 p-1 text-white hover:cursor-pointer transition-colors;
+}
+
+.confirm-delete-button {
+    @apply border-2 border-slate-500 bg-slate-400 p-1
+        text-white hover:cursor-pointer
+        hover:bg-slate-300 transition-colors;
+}
+
+.green-button {
+    @apply border-2 border-green-900 bg-green-600 p-1
+        hover:cursor-pointer hover:bg-green-400
+        hover:border-green-600 transition-colors;
+}
+
+.retrieve-data-form {
+    @apply rounded-2xl border p-10 w-[38rem] h-72 flex flex-col
+        space-y-1 bg-slate-100 border-slate-500 scale-[135%];
+}
+
+.slate-form {
+    @apply rounded-2xl border p-10 w-96 space-y-1
+        bg-slate-100 border-slate-500 scale-[135%];
+}

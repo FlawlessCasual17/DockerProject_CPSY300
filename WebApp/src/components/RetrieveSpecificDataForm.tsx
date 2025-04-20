@@ -3,10 +3,10 @@ import { createSignal } from 'solid-js';
 import type { Student } from '../types';
 
 export default function RetrieveSpecificDataForm() {
-    const [studentId, setStudentId] = createSignal('');
-    const [student, setStudent] = createSignal<Student | null>(null);
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<string | null>(null);
+    const [studentId, setStudentId] = createSignal('');
+    const [student, setStudent] = createSignal<Student | null>(null);
 
     function handleSubmit(event: SubmitEvent) {
         event.preventDefault();
@@ -16,15 +16,18 @@ export default function RetrieveSpecificDataForm() {
             return;
         }
 
+        setLoading(true);
+        setError(null);
+        setStudent(null);
+
         (async () => {
             try {
-                setLoading(true);
-                setError(null);
-                setStudent(null);
-
-                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                const response = await fetch(`http://localhost:8080/student/${studentId()}`, {
                     method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: {
+                        'Accept': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
                 });
 
                 const data = await response.json();
@@ -45,7 +48,7 @@ export default function RetrieveSpecificDataForm() {
     }
 
     return (
-        <div class='rounded-2xl border p-10 w-96 flex flex-col space-y-4 bg-slate-100 border-slate-500 scale-[135%]'>
+        <div class='slate-form'>
             <h1 class='relative text-2xl bottom-2.5'>Find Student</h1>
 
             <form onSubmit={handleSubmit} class='flex flex-col space-y-4'>
@@ -63,7 +66,7 @@ export default function RetrieveSpecificDataForm() {
                 </label>
 
                 <button
-                    class='w-full rounded-lg border-2 border-blue-900 bg-blue-600 p-1 text-white hover:cursor-pointer hover:bg-blue-400 hover:border-blue-600 transition-colors'
+                    class='w-full rounded-lg blue-button'
                     type='submit'
                     disabled={loading()}
                 >

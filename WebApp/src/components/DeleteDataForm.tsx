@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { createSignal } from 'solid-js';
 import type { Student } from '../types';
+
+dayjs.extend(customParseFormat);
 
 export default function DeleteDataForm() {
     const [loading, setLoading] = createSignal(false);
@@ -8,9 +11,8 @@ export default function DeleteDataForm() {
     const [error, setError] = createSignal<string | null>(null);
     const [success, setSuccess] = createSignal<string | null>(null);
     const [confirmDelete, setConfirmDelete] = createSignal(false);
-
     const [studentId, setStudentId] = createSignal('');
-    const [student, setStudent] = createSignal<Student | null>(null);
+    const [studentData, setStudentData] = createSignal<Student | null>(null);
 
     function searchStudent() {
         if (!studentId()) {
@@ -18,35 +20,35 @@ export default function DeleteDataForm() {
             return;
         }
 
+        setSearchLoading(true);
+        setError(null);
+        setSuccess(null);
+        setStudentData(null);
+        setConfirmDelete(false);
+
         (async () => {
             try {
-                setSearchLoading(true);
-                setError(null);
-                setSuccess(null);
-                setStudent(null);
-                setConfirmDelete(false);
-
-                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                const response = await fetch(`http://localhost:8080/student/${studentId()}`, {
                     method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    const errorMsg = data.error || 'Unknown error occurred.';
-                    setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
+                    const error = data.error || 'Unknown error occurred.';
+                    setError(Array.isArray(error) ? error.join('\n') : error);
                     console.error('Error fetching student:\n', data);
-                } else {
-                    setStudent(data);
-                }
+                } else setStudentData(data);
             } catch (error) {
                 const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
                 setError(msg);
                 console.error('Failed to fetch student:\n', msg);
-            } finally {
-                setSearchLoading(false);
-            }
+            } finally { setSearchLoading(false); }
         })()
     }
 
@@ -56,14 +58,17 @@ export default function DeleteDataForm() {
             return;
         }
 
+        setLoading(true);
+        setError(null);
+
         (async () => {
             try {
-                setLoading(true);
-                setError(null);
-
-                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                const response = await fetch(`http://localhost:8080/student/${studentId()}`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: {
+                        'Accept': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
                 });
 
                 const data = await response.json();
@@ -71,26 +76,30 @@ export default function DeleteDataForm() {
                 if (!response.ok) {
                     const errorMsg = data.error || 'Unknown error occurred.';
                     setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
+                    alert('Error deleting student');
                     console.error('Error deleting student:', data);
                 } else {
                     setSuccess(data.message || 'Student deleted successfully!');
-                    setStudent(null);
+                    setStudentData(null);
                     setStudentId('');
                     setConfirmDelete(false);
+                    alert('Student deleted successfully!');
+                    console.log('Student deleted successfully!\n', data);
                 }
             } catch (error) {
                 const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
                 setError(msg);
-                console.error('Failed to delete student:', msg);
+                alert('Failed to delete student');
+                console.error('Failed to delete student:\n', msg);
             }
         })()
     }
 
     return (
-        <div class='rounded-2xl border p-10 w-96 flex flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'>
+        <div class='flex flex-col slate-form'>
             <h1 class='relative text-2xl bottom-2.5'>Delete Student</h1>
 
-            <div class='flex gap-2'>
+            <form class='flex gap-2'>
                 <input
                     class='flex-1 rounded-lg border-2 border-slate-900 bg-gray-300 p-1'
                     type='text'
@@ -99,13 +108,13 @@ export default function DeleteDataForm() {
                     onInput={(e) => setStudentId(e.currentTarget.value)}
                 />
                 <button
-                    class='rounded-lg border-2 border-blue-900 bg-blue-600 p-1 px-4 text-white hover:cursor-pointer hover:bg-blue-400 hover:border-blue-600 transition-colors'
+                    class='rounded-lg blue-button'
                     onClick={searchStudent}
                     disabled={searchLoading()}
                 >
                     {searchLoading() ? 'Searching...' : 'Search'}
                 </button>
-            </div>
+            </form>
 
             {error() && (
                 <div class='font-mono text-red-500 p-2 border border-red-300 bg-red-50 rounded'>
@@ -119,49 +128,44 @@ export default function DeleteDataForm() {
                 </div>
             )}
 
-            {student() && (
-                <div class='mt-4 p-4 border rounded-lg bg-white'>
-                    <h2 class='text-xl font-bold mb-4'>Student Details</h2>
+            {studentData() && (<div class='mt-4 p-4 border rounded-lg bg-white'>
+                <h2 class='text-xl font-bold mb-4'>Student Details</h2>
 
-                    <div class='grid grid-cols-[auto_1fr] gap-2 mb-6'>
-                        <div class='font-bold'>ID:</div>
-                        <div>{student()?.studentID}</div>
+                <div class='grid grid-cols-[auto_1fr] gap-2 mb-6'>
+                    <div class='font-bold'>ID:</div>
+                    <div>{studentData()?.studentID}</div>
 
-                        <div class='font-bold'>Name:</div>
-                        <div>{student()?.studentName}</div>
+                    <div class='font-bold'>Name:</div>
+                    <div>{studentData()?.studentName}</div>
 
-                        <div class='font-bold'>Course:</div>
-                        <div>{student()?.courseName}</div>
+                    <div class='font-bold'>Course:</div>
+                    <div>{studentData()?.courseName}</div>
 
-                        <div class='font-bold'>Date:</div>
-                        <div>{student()?.Date.toLocaleDateString()}</div>
-                    </div>
-
-                    <button
-                        class={`w-full rounded-lg border-2 p-1 text-white hover:cursor-pointer transition-colors ${confirmDelete()
-                            ? 'border-red-900 bg-red-700 hover:bg-red-800'
-                            : 'border-red-400 bg-red-500 hover:bg-red-600'
-                            }`}
-                        onClick={handleDelete}
-                        disabled={loading()}
-                    >
-                        {loading()
-                            ? 'Deleting...'
-                            : confirmDelete()
-                                ? 'Confirm Delete'
-                                : 'Delete Student'}
-                    </button>
-
-                    {confirmDelete() && (
-                        <button
-                            class='w-full mt-2 rounded-lg border-2 border-slate-500 bg-slate-400 p-1 text-white hover:cursor-pointer hover:bg-slate-300 transition-colors'
-                            onClick={() => setConfirmDelete(false)}
-                        >
-                            Cancel
-                        </button>
-                    )}
+                    <div class='font-bold'>Date:</div>
+                    <div>{dayjs(studentData()?.Date).format('DD/MM/YYYY')}</div>
                 </div>
-            )}
+
+                <button
+                    class={
+                        `w-full rounded-lg delete-button
+                        ${confirmDelete() ? 'border-red-900 bg-red-700 hover:bg-red-800'
+                            : 'border-red-400 bg-red-500 hover:bg-red-600'
+                        }`
+                    }
+                    onClick={handleDelete}
+                    disabled={loading()}
+                >
+                    {loading() ? 'Deleting...' :
+                        confirmDelete() ? 'Confirm Delete' : 'Delete Student'}
+                </button>
+
+                {confirmDelete() && (<button
+                    class='w-full mt-2 rounded-lg confirm-delete-button'
+                    onClick={() => setConfirmDelete(false)}
+                >
+                    Cancel
+                </button>)}
+            </div>)}
         </div>
     );
 }

@@ -3,7 +3,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { createSignal } from 'solid-js';
 import type { Student } from '../types';
 
-const stringIsNullOrEmpty = (str: string) => str === null || str === undefined || str === '';
+const stringIsNullOrEmpty = (str: string): boolean => str === null || str === undefined || str === '';
 
 const dateFormat =  'YYYY-MM-DD';
 
@@ -16,19 +16,19 @@ export default function AddDataForm() {
             studentName: '',
             courseName: '',
             Date: new Date()
-        },
-        { equals: false }
+        }
     );
     const [error, setError] = createSignal<string | null>(null);
 
     function handleInput(event: Event) {
         const target = event.target as HTMLInputElement;
         const key = target.id as keyof Student;
+
         // Finally, set student data
-        setStudentData(stud => {
+        setStudentData(prev => {
             const value = !stringIsNullOrEmpty(target.value) ? target.value : '';
             return {
-                ...stud,
+                ...prev,
                 [key]: value,
                 Date: dayjs(value, dateFormat).toDate()
             };
@@ -40,9 +40,13 @@ export default function AddDataForm() {
 
         (async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8080/student', {
+                const response = await fetch('http://localhost:8080/student', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
                     body: JSON.stringify({ ...studentData() })
                 });
 
@@ -51,7 +55,7 @@ export default function AddDataForm() {
                 if (!response.ok) {
                     const error = data.error || 'Unknown error occurred.';
                     setError(error);
-                    alert(`An error occurred\n${error}`);
+                    alert('An error occurred');
                     console.error('An error occurred\n', data);
                 } else {
                     alert('Student added successfully!');
@@ -68,7 +72,7 @@ export default function AddDataForm() {
 
     return (
         <form
-            class='rounded-2xl border p-10 w-96 flex flex-wrap flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'
+            class='flex flex-col flex-wrap slate-form'
             id='addStudentForm'
             onSubmit={handleSubmit}
         >
@@ -89,7 +93,7 @@ export default function AddDataForm() {
             <label for='studentName' id='studdentName_label' class='relative flex flex-col'>
                 <div class='leading-6 font-bold'>Student Name</div>
                 <input
-                    class='w-full rounded-lg border-2 border-slate-900 bg-gray-300 p-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-slate-500'
+                    class='w-full rounded-lg border-2 border-slate-900 bg-gray-300 p-1'
                     id='studentName'
                     type='text'
                     name='studentName'
@@ -102,7 +106,7 @@ export default function AddDataForm() {
             <label for='courseName' id='courseName_label' class='relative flex flex-col'>
                 <div class='leading-6 font-bold'>Course Name</div>
                 <input
-                    class='w-full rounded-lg border-2 border-slate-900 bg-gray-300 p-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-slate-500'
+                    class='w-full rounded-lg border-2 border-slate-900 bg-gray-300 p-1'
                     id='courseName'
                     type='text'
                     name='courseName'
@@ -126,7 +130,7 @@ export default function AddDataForm() {
                 />
             </label>
             <button
-                class='relative top-2 w-full rounded-lg border-2 border-green-900 bg-green-600 p-1 hover:cursor-pointer hover:bg-green-400 hover:border-green-600 transition-colors'
+                class='relative top-2 w-full rounded-lg border-2 green-button'
                 type='submit'
             >
                 Submit Data

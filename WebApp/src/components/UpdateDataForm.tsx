@@ -3,16 +3,17 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { createSignal } from 'solid-js';
 import type { Student } from '../types';
 
+const stringIsNullOrEmpty = (str: string): boolean => str === null || str === undefined || str === '';
+
 dayjs.extend(customParseFormat);
 
 const dateFormat = 'YYYY-MM-DD';
 
 export default function UpdateDataForm() {
-    const [studentId, setStudentId] = createSignal('');
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<string | null>(null);
     const [success, setSuccess] = createSignal<string | null>(null);
-
+    const [studentId, setStudentId] = createSignal('');
     const [studentData, setStudentData] = createSignal<Student>({
         studentID: '',
         studentName: '',
@@ -27,36 +28,39 @@ export default function UpdateDataForm() {
             return;
         }
 
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
         (async () => {
             try {
-                setLoading(true);
-                setError(null);
-                setSuccess(null);
-
-                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                const response = await fetch(`http://localhost:8080/student/${studentId()}`, {
                     method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    const errorMsg = data.error || 'Unknown error occurred.';
-                    setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
-                    setFoundStudent(false);
+                    const error = data.error || 'Unknown error occurred.';
+                    setError(Array.isArray(error) ? error.join('\n') : error);
                     console.error('Error fetching student:', data);
+                    setFoundStudent(false);
                 } else {
-                    setStudentData(data);
+                    console.log('Student found successfully!\n', data);
                     setFoundStudent(true);
+                    setStudentData(data);
                 }
             } catch (error) {
                 const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
                 setError(msg);
                 setFoundStudent(false);
                 console.error('Failed to fetch student:', msg);
-            } finally {
-                setLoading(false);
-            }
+            } finally { setLoading(false); }
         })()
     }
 
@@ -65,54 +69,53 @@ export default function UpdateDataForm() {
         const key = target.id as keyof Student;
 
         setStudentData(prev => {
-            if (key === 'Date') {
-                return {
-                    ...prev,
-                    [key]: dayjs(target.value, dateFormat).toDate()
-                };
-            }
-            return {
-                ...prev,
-                [key]: target.value
-            };
+            const value = !stringIsNullOrEmpty(target.value) ? target.value : '';
+
+            if (key === 'Date') return { ...prev, [key]: dayjs(value, dateFormat).toDate() };
+
+            return { ...prev, [key]: value };
         });
     }
 
     function handleSubmit(event: SubmitEvent) {
         event.preventDefault();
 
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
         (async () => {
             try {
-                setLoading(true);
-                setError(null);
-                setSuccess(null);
-
-                const response = await fetch(`http://127.0.0.1:8080/student/${studentId()}`, {
+                const response = await fetch(`http://localhost:8080/student/${studentId()}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(studentData())
+                    body: JSON.stringify({ ...studentData() })
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    const errorMsg = data.error || 'Unknown error occurred.';
-                    setError(Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
-                    console.error('Error updating student:', data);
+                    const error = data.error || 'Unknown error occurred.';
+                    setError(Array.isArray(error) ? error.join('\n') : error);
+                    alert('Error updating student');
+                    console.error('Error updating student:\n', data);
                 } else {
                     setSuccess('Student updated successfully!');
                     setStudentData(data);
+                    alert('Student updated successfully!');
+                    console.log('Student updated successfully!\n', data);
                 }
             } catch (error) {
                 const msg = error instanceof Error ? error.message : 'Unknown error occurred.';
                 setError(msg);
-                console.error('Failed to update student:', msg);
+                alert('Failed to update student');
+                console.error('Failed to update student:\n', msg);
             }
         })()
     }
 
     return (
-        <div class='rounded-2xl border p-10 w-96 flex flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'>
+        <div class='flex flex-col slate-form'>
             <h1 class='relative text-2xl bottom-2.5'>Update Student</h1>
 
             <div class='flex gap-2'>
@@ -121,10 +124,10 @@ export default function UpdateDataForm() {
                     type='text'
                     placeholder='Enter Student ID'
                     value={studentId()}
-                    onInput={(e) => setStudentId(e.currentTarget.value)}
+                    onInput={e => setStudentId(e.currentTarget.value)}
                 />
                 <button
-                    class='rounded-lg border-2 border-blue-900 bg-blue-600 p-1 px-4 text-white hover:cursor-pointer hover:bg-blue-400 hover:border-blue-600 transition-colors'
+                    class='rounded-lg blue-button'
                     onClick={searchStudent}
                     disabled={loading()}
                 >
