@@ -1,34 +1,75 @@
 # Docker Project for CPSY300
 
-A (WIP) description.
+My submission for the Docker Project for CPSY300.
 
-## Table of Contents
-
-* [Docker Project for CPSY300](#docker-project-for-cpsy300)
-  * [Table of Contents](#table-of-contents)
-  * [:package: Building and Running :rocket:](#package-building-and-running-rocket)
-  * [:whale: Docker / Podman :otter:](#whale-docker--podman-otter)
-    * [:package: Building the Image](#package-building-the-image)
+<!--toc:start-->
+- [Docker Project for CPSY300](#docker-project-for-cpsy300)
+  - [:package: Building and Running :rocket:](#package-building-and-running-rocket)
+  - [:whale: Docker / Podman :otter:](#whale-docker-podman-otter)
+    - [:package: Building the Image](#package-building-the-image)
+<!--toc:end-->
 
 ## :package: Building and Running :rocket:
 
-To build the app execute,
+<details>
+<summary>API</summary>
+
+The API is built using the [ASP.NET Core](https://dotnet.microsoft.com/en-us/apps/aspnet) framework.
+
+To run or build the API, you will need to have the [dotNET SDK](https://dotnet.microsoft.com/) installed.
+
+Before doing any of the tasks below, make sure to run,
+
+```sh
+dotnet restore
+```
+
+To build the API execute,
 
 ```sh
 dotnet build .
 ```
 
-To build AND run the app, execute,
+To build AND run the API, execute,
 
 ```sh
 dotnet run . --launch-profile http
 ```
 
-To run the app (without building), execute,
+To run the API (without building), execute,
 
 ```sh
 dotnet run . --no-build --launch-profile http
 ```
+
+</details>
+
+<details>
+<summary>Web App</summary>
+
+The Web App is built using the [Astro framework](https://astro.build/), [SolidJS](https://www.solidjs.com/), and [TailwindCSS](https://tailwindcss.com/).
+
+To run or build the Web App, you will need to have the [Node.js](https://nodejs.org/en/) and [pnpm](https://pnpm.io/) installed.
+
+Before doing any of the tasks below, make sure to run,
+
+```sh
+pnpm install
+```
+
+To build the Web App execute,
+
+```sh
+pnpm run build
+```
+
+To run the Web App, execute,
+
+```sh
+pnpm run dev
+```
+
+</details>
 
 ## :whale: Docker / Podman :otter:
 
@@ -47,13 +88,13 @@ the app easily by using, `docker compose` or `podman compose`,
 * **Docker**
 
   ```sh
-  docker-compose up -d --build
+  docker-compose up -d
   ```
 
 * **Podman**
 
   ```sh
-  podman-compose up -d --build
+  podman-compose up -d
   ```
 
 Using either choice is the recommended way to
