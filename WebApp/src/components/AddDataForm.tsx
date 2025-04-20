@@ -39,9 +39,6 @@ export default function AddDataForm() {
     function handleSubmit(event: SubmitEvent) {
         event.preventDefault();
 
-        if (Object.values(studentData()).every(v => v === null))
-            console.log('Either all or some properties in `studentData()` were not filled');
-
         (async () => {
             try {
                 const response = await fetch('http://127.0.0.1:8080/student', {
