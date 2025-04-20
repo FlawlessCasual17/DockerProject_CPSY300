@@ -21,7 +21,7 @@ To run or build the API, you will need to have the [dotNET SDK](https://dotnet.m
 Before doing any of the tasks below, make sure to run,
 
 ```sh
-dotnet restore
+dotnet restore .
 ```
 
 To build the API execute,
@@ -57,16 +57,16 @@ Before doing any of the tasks below, make sure to run,
 pnpm install
 ```
 
-To build the Web App execute,
-
-```sh
-pnpm run build
-```
-
 To run the Web App, execute,
 
 ```sh
 pnpm run dev
+```
+
+To build the Web App execute,
+
+```sh
+pnpm run build
 ```
 
 </details>
