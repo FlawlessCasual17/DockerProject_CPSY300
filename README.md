@@ -2,12 +2,9 @@
 
 My submission for the Docker Project for CPSY300.
 
-<!--toc:start-->
-- [Docker Project for CPSY300](#docker-project-for-cpsy300)
-  - [:package: Building and Running :rocket:](#package-building-and-running-rocket)
-  - [:whale: Docker / Podman :otter:](#whale-docker-podman-otter)
-    - [:package: Building the Image](#package-building-the-image)
-<!--toc:end-->
+* [:package: Building and Running :rocket:](#package-building-and-running-rocket)
+* [:whale: Docker / Podman :otter:](#whale-docker-podman-otter)
+  * [:package: Building the Image](#package-building-the-image)
 
 ## :package: Building and Running :rocket:
 
