@@ -1,16 +1,31 @@
 ---
-import AddDataForm from '../components/AddDataForm.tsx';
+import AddDataForm from '../components/AddDataForm';
+import DeleteDataForm from '../components/DeleteDataForm';
+import RetrieveDataForm from '../components/RetrieveDataForm';
+import RetrieveSpecificDataForm from '../components/RetrieveSpecificDataForm';
+import UpdateDataForm from '../components/UpdateDataForm';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
-
-// return Astro.redirect('/')
 ---
 
 <Layout>
-    <div class='flex p-10 m-10'>
-        <!-- Get student data -->
-        <AddDataForm client:load />
+    <div class='relative flex flex-col gap-5 m-2 p-2'>
+        <div class='relative p-10 m-10'>
+            <!-- Add student data -->
+            <AddDataForm client:load />
+        </div>
+        <div class='relative p-10 m-10'>
+            <!-- Update student data -->
+            <UpdateDataForm client:load />
+        </div>
+        <div class='relative p-10 m-10'>
+            <!-- Delete student data -->
+            <DeleteDataForm client:load />
+        </div>
     </div>
+    <!-- <div class='absolute flex flex-col space-x-12 p-10 m-10'> -->
+        <!-- Get student data -->
+        <!-- <RetrieveDataForm client:load /> -->
+        <!-- Get student data by ID -->
+        <!-- <RetrieveSpecificDataForm client:load /> -->
+    <!-- </div> -->
 </Layout>
