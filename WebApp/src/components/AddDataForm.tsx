@@ -19,7 +19,6 @@ export default function AddDataForm() {
         },
         { equals: false }
     );
-
     const [error, setError] = createSignal<string | null>(null);
 
     function handleInput(event: Event) {
