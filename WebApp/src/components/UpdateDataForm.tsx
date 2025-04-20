@@ -112,8 +112,8 @@ export default function UpdateDataForm() {
     }
 
     return (
-        <div class='rounded-2xl border p-6 flex flex-col space-y-4 bg-slate-100 border-slate-500 w-full max-w-lg'>
-            <h1 class='text-2xl font-bold'>Update Student</h1>
+        <div class='rounded-2xl border p-10 w-96 flex flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'>
+            <h1 class='relative text-2xl bottom-2.5'>Update Student</h1>
 
             <div class='flex gap-2'>
                 <input

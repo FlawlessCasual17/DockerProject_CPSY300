@@ -69,7 +69,7 @@ export default function AddDataForm() {
 
     return (
         <form
-            class='rounded-2xl border p-10 w-80 flex flex-wrap flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'
+            class='rounded-2xl border p-10 w-96 flex flex-wrap flex-col space-y-1 bg-slate-100 border-slate-500 scale-[135%]'
             id='addStudentForm'
             onSubmit={handleSubmit}
         >
