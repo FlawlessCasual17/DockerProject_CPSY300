@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 7199
 EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
