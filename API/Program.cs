@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using API.Database;
 using API.Helpers;
 using Z.EntityFramework.Plus;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 namespace API;
 
 public abstract class Program {
@@ -13,28 +16,42 @@ public abstract class Program {
     /// Standard entry point. Nothing special.
     /// </summary>
     public static async Task Main() {
-        // Initialize the API server
-        var builder = WebApplication.CreateBuilder();
+        var builder = WebApplication.CreateBuilder(); // Initialize the API server
 
         // Add a new CORS policy
-        builder.Services.AddCors(opts => {
+        builder.Services.AddCors(opts =>
             opts.AddPolicy("CorsPolicy", builder => {
                 builder.AllowAnyOrigin();
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
+            })
+        );
+        // Add authorization services
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opts => {
+                opts.Authority = builder.Configuration["Api:Authority"];
+                opts.Audience = builder.Configuration["Api:Audience"];
+                opts.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuer = true,
+                    ValidateAudience = false,
+                    ValidateLifetime = true
+                };
+                opts.SaveToken = true;
             });
-        });
+        // Add authorization services
+        builder.Services.AddAuthorizationBuilder()
+            .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser().Build());
         builder.Services.AddRouting(); // Add routing services
         builder.Services.AddOpenApi(); // Add OpenAPI services
 
-        // Build the API server
-        var app = builder.Build();
+        var app = builder.Build(); // Build the API server
 
         app.UseCors("CorsPolicy"); // Enable CORS
+        app.UseAuthentication(); // Enable authentication
+        app.UseAuthorization(); // Enable authorization
         app.UseRouting(); // Enable routing
         app.MapOpenApi(); // Map the OpenAPI route
-        // app.UseAuthorization();
-        // app.UseAuthentication();
 
         // Initialize a new instance of the database
         var dbService = new Service();
@@ -55,14 +72,14 @@ public abstract class Program {
         };
 
         // Create a route for GET requests
-        app.MapGet("/student", async () => {
+        app.MapGet("/student", [Authorize] async () => {
             // Retrieve all student data and return the results.
             var students = await dbContext.Students!.ToListAsync();
             return Results.Json(students, options, statusCode: 200);
         }).WithName("GetAllStudentData");
 
         // Create a route for GET requests (using the student's ID)
-        app.MapGet("/student/{studentId}", async (string studentId) => {
+        app.MapGet("/student/{studentId}", [Authorize] async (string studentId) => {
             // Retrieve all student data
             var students = await dbContext.Students!.ToListAsync();
 
@@ -78,7 +95,7 @@ public abstract class Program {
         }).WithName("GetSpecificStudentData");
 
         // Create a route for POST requests
-        app.MapPost("/student", async (Students stud) => {
+        app.MapPost("/student", [Authorize] async (Students stud) => {
             // For later use.
             var studentId = stud.StudentId;
 
@@ -98,7 +115,7 @@ public abstract class Program {
         }).WithName("AddStudentData");
 
         // Create a route for PUT requests
-        app.MapPut("/student/{studentId}", async (
+        app.MapPut("/student/{studentId}", [Authorize] async (
             Students stud, string studentId
         ) => {
             // Set stud.studentId to studentId
@@ -136,7 +153,7 @@ public abstract class Program {
         }).WithName("UpdateStudentData");
 
         // Create a route for DELETE requests (using the student's ID).
-        app.MapDelete("/student/{studentId}", async (string studentId) => {
+        app.MapDelete("/student/{studentId}", [Authorize] async (string studentId) => {
             // Check if a student does not exist.
             var isNotExisting = await dbContext.Students!
                 .AnyAsync(s => s.StudentId == studentId);
