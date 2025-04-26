@@ -4,9 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using API.Database;
 using API.Helpers;
 using Z.EntityFramework.Plus;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authorization;
 namespace API;
 
 public abstract class Program {
