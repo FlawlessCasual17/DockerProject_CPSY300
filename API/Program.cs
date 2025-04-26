@@ -26,30 +26,12 @@ public abstract class Program {
                 builder.AllowAnyHeader();
             })
         );
-        // Add authorization services
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opts => {
-                opts.Authority = builder.Configuration["Api:Authority"];
-                opts.Audience = builder.Configuration["Api:Audience"];
-                opts.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuer = true,
-                    ValidateAudience = false,
-                    ValidateLifetime = true
-                };
-                opts.SaveToken = true;
-            });
-        // Add authorization services
-        builder.Services.AddAuthorizationBuilder()
-            .SetDefaultPolicy(new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser().Build());
         builder.Services.AddRouting(); // Add routing services
         builder.Services.AddOpenApi(); // Add OpenAPI services
 
         var app = builder.Build(); // Build the API server
 
         app.UseCors("CorsPolicy"); // Enable CORS
-        app.UseAuthentication(); // Enable authentication
-        app.UseAuthorization(); // Enable authorization
         app.UseRouting(); // Enable routing
         app.MapOpenApi(); // Map the OpenAPI route
 
@@ -72,14 +54,14 @@ public abstract class Program {
         };
 
         // Create a route for GET requests
-        app.MapGet("/student", [Authorize] async () => {
+        app.MapGet("/student", async () => {
             // Retrieve all student data and return the results.
             var students = await dbContext.Students!.ToListAsync();
             return Results.Json(students, options, statusCode: 200);
         }).WithName("GetAllStudentData");
 
         // Create a route for GET requests (using the student's ID)
-        app.MapGet("/student/{studentId}", [Authorize] async (string studentId) => {
+        app.MapGet("/student/{studentId}", async (string studentId) => {
             // Retrieve all student data
             var students = await dbContext.Students!.ToListAsync();
 
@@ -95,7 +77,7 @@ public abstract class Program {
         }).WithName("GetSpecificStudentData");
 
         // Create a route for POST requests
-        app.MapPost("/student", [Authorize] async (Students stud) => {
+        app.MapPost("/student", async (Students stud) => {
             // For later use.
             var studentId = stud.StudentId;
 
@@ -115,7 +97,7 @@ public abstract class Program {
         }).WithName("AddStudentData");
 
         // Create a route for PUT requests
-        app.MapPut("/student/{studentId}", [Authorize] async (
+        app.MapPut("/student/{studentId}", async (
             Students stud, string studentId
         ) => {
             // Set stud.studentId to studentId
@@ -153,7 +135,7 @@ public abstract class Program {
         }).WithName("UpdateStudentData");
 
         // Create a route for DELETE requests (using the student's ID).
-        app.MapDelete("/student/{studentId}", [Authorize] async (string studentId) => {
+        app.MapDelete("/student/{studentId}", async (string studentId) => {
             // Check if a student does not exist.
             var isNotExisting = await dbContext.Students!
                 .AnyAsync(s => s.StudentId == studentId);
